@@ -1,0 +1,37 @@
+{
+  "theme": {
+    "extend": {
+      "colors": {
+        "brand": {
+          "light": "#6B5BFF",
+          "hover": "#5846F7",
+          "subtle": "#F3F4FF"
+        },
+        "background": {
+          "DEFAULT": "#FFFFFF",
+          "dark": "#0F0F11",
+          "sidebar": "#111214",
+          "card": "#1A1C20"
+        },
+        "border": {
+          "DEFAULT": "#E5E7EB",
+          "dark": "#2A2D32"
+        },
+        "text": {
+          "primary": {
+            "DEFAULT": "#1A1A1A",
+            "dark": "#FFFFFF"
+          },
+          "secondary": {
+            "DEFAULT": "#6B6F76",
+            "dark": "#C7CBD1"
+          },
+          "muted": {
+            "DEFAULT": "#9CA3AF",
+            "dark": "#7A7F87"
+          }
+        }
+      }
+    }
+  }
+}
