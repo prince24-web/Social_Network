@@ -33,7 +33,7 @@ export function AuthForm({ className, ...props }) {
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: `${location.origin}/auth/callback`,
+          emailRedirectTo: `${location.origin}/auth/callback?next=/onboarding`,
         },
       })
 
@@ -55,7 +55,7 @@ export function AuthForm({ className, ...props }) {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'github',
         options: {
-          redirectTo: `${location.origin}/auth/callback`,
+          redirectTo: `${location.origin}/auth/callback?next=/onboarding`,
         },
       })
       if (error) {
