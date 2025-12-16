@@ -43,7 +43,7 @@ export default async function ProfilePage({ params }) {
 
     // Mock stats for now
     const stats = [
-        { label: "Followers", value: 0, icon: Users },
+        { label: "Followers", value: "10M", icon: Users },
         { label: "Following", value: 0, icon: Users },
         { label: "Posts", value: 0, icon: FileText },
         { label: "Replies", value: 0, icon: MessageSquare },
@@ -174,18 +174,6 @@ export default async function ProfilePage({ params }) {
                         </div>
 
                         <Separator />
-
-                        {/* Content Tabs (Placeholder) */}
-                        <div className="space-y-4">
-                            <div className="flex gap-6 border-b">
-                                <button className="pb-3 border-b-2 border-primary font-medium text-foreground">Posts</button>
-                                <button className="pb-3 border-b-2 border-transparent text-muted-foreground hover:text-foreground transition-colors">Replies</button>
-                            </div>
-
-                            <div className="py-8 text-center text-muted-foreground border-2 border-dashed rounded-xl">
-                                <p>No posts yet.</p>
-                            </div>
-                        </div>
 
                     </div>
                 </div>

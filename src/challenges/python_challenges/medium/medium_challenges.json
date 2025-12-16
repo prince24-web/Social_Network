@@ -1,0 +1,180 @@
+[
+  {
+    "id": "valid-parentheses",
+    "title": "Valid Parentheses",
+    "difficulty": "medium",
+    "description": "Check if parentheses are valid.",
+    "functionSignature": "def is_valid(s):",
+    "starterCode": "def is_valid(s):\n    pass",
+    "testCases": [
+      {
+        "input": [
+          "()[]{}"
+        ],
+        "output": true
+      },
+      {
+        "input": [
+          "(]"
+        ],
+        "output": false
+      }
+    ],
+    "hiddenTests": [
+      {
+        "input": [
+          "((()))"
+        ],
+        "output": true
+      }
+    ],
+    "timeLimit": 2000
+  },
+  {
+    "id": "remove-duplicates",
+    "title": "Remove Duplicates",
+    "difficulty": "medium",
+    "description": "Remove duplicates from an array.",
+    "functionSignature": "def remove_duplicates(nums):",
+    "starterCode": "def remove_duplicates(nums):\n    pass",
+    "testCases": [
+      {
+        "input": [
+          [
+            1,
+            1,
+            2,
+            3
+          ]
+        ],
+        "output": [
+          1,
+          2,
+          3
+        ]
+      }
+    ],
+    "hiddenTests": [
+      {
+        "input": [
+          [
+            5,
+            5,
+            5
+          ]
+        ],
+        "output": [
+          5
+        ]
+      }
+    ],
+    "timeLimit": 2000
+  },
+  {
+    "id": "fibonacci",
+    "title": "Fibonacci Number",
+    "difficulty": "medium",
+    "description": "Return the nth Fibonacci number.",
+    "functionSignature": "def fibonacci(n):",
+    "starterCode": "def fibonacci(n):\n    pass",
+    "testCases": [
+      {
+        "input": [
+          5
+        ],
+        "output": 5
+      }
+    ],
+    "hiddenTests": [
+      {
+        "input": [
+          0
+        ],
+        "output": 0
+      }
+    ],
+    "timeLimit": 2000
+  },
+  {
+    "id": "chunk-array",
+    "title": "Array Chunk",
+    "difficulty": "medium",
+    "description": "Split array into chunks of given size.",
+    "functionSignature": "def chunk_array(arr, size):",
+    "starterCode": "def chunk_array(arr, size):\n    pass",
+    "testCases": [
+      {
+        "input": [
+          [
+            1,
+            2,
+            3,
+            4
+          ],
+          2
+        ],
+        "output": [
+          [
+            1,
+            2
+          ],
+          [
+            3,
+            4
+          ]
+        ]
+      }
+    ],
+    "hiddenTests": [
+      {
+        "input": [
+          [
+            1,
+            2,
+            3
+          ],
+          1
+        ],
+        "output": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ]
+        ]
+      }
+    ],
+    "timeLimit": 2000
+  },
+  {
+    "id": "anagram",
+    "title": "Valid Anagram",
+    "difficulty": "medium",
+    "description": "Check if two strings are anagrams.",
+    "functionSignature": "def is_anagram(s, t):",
+    "starterCode": "def is_anagram(s, t):\n    pass",
+    "testCases": [
+      {
+        "input": [
+          "anagram",
+          "nagaram"
+        ],
+        "output": true
+      }
+    ],
+    "hiddenTests": [
+      {
+        "input": [
+          "rat",
+          "car"
+        ],
+        "output": false
+      }
+    ],
+    "timeLimit": 2000
+  }
+]

@@ -1,0 +1,222 @@
+[
+  {
+    "id": "binary-search",
+    "title": "Binary Search",
+    "difficulty": "hard",
+    "description": "Search target in sorted array.",
+    "functionSignature": "function binarySearch(nums, target) {}",
+    "starterCode": "function binarySearch(nums, target) {\n  \n}",
+    "testCases": [
+      {
+        "input": [
+          [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          4
+        ],
+        "output": 3
+      }
+    ],
+    "hiddenTests": [
+      {
+        "input": [
+          [
+            1
+          ],
+          1
+        ],
+        "output": 0
+      }
+    ],
+    "timeLimit": 2000
+  },
+  {
+    "id": "merge-intervals",
+    "title": "Merge Intervals",
+    "difficulty": "hard",
+    "description": "Merge overlapping intervals.",
+    "functionSignature": "function merge(intervals) {}",
+    "starterCode": "function merge(intervals) {\n  \n}",
+    "testCases": [
+      {
+        "input": [
+          [
+            [
+              1,
+              3
+            ],
+            [
+              2,
+              6
+            ],
+            [
+              8,
+              10
+            ]
+          ]
+        ],
+        "output": [
+          [
+            1,
+            6
+          ],
+          [
+            8,
+            10
+          ]
+        ]
+      }
+    ],
+    "hiddenTests": [
+      {
+        "input": [
+          [
+            [
+              1,
+              4
+            ],
+            [
+              4,
+              5
+            ]
+          ]
+        ],
+        "output": [
+          [
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "timeLimit": 2000
+  },
+  {
+    "id": "longest-substring",
+    "title": "Longest Substring Without Repeating Characters",
+    "difficulty": "hard",
+    "description": "Find length of longest substring.",
+    "functionSignature": "function longestSubstring(s) {}",
+    "starterCode": "function longestSubstring(s) {\n  \n}",
+    "testCases": [
+      {
+        "input": [
+          "abcabcbb"
+        ],
+        "output": 3
+      }
+    ],
+    "hiddenTests": [
+      {
+        "input": [
+          "bbbbb"
+        ],
+        "output": 1
+      }
+    ],
+    "timeLimit": 2000
+  },
+  {
+    "id": "deep-clone",
+    "title": "Deep Clone Object",
+    "difficulty": "hard",
+    "description": "Deep clone a nested object.",
+    "functionSignature": "function deepClone(obj) {}",
+    "starterCode": "function deepClone(obj) {\n  \n}",
+    "testCases": [
+      {
+        "input": [
+          {
+            "a": {
+              "b": 1
+            }
+          }
+        ],
+        "output": {
+          "a": {
+            "b": 1
+          }
+        }
+      }
+    ],
+    "hiddenTests": [
+      {
+        "input": [
+          {}
+        ],
+        "output": {}
+      }
+    ],
+    "timeLimit": 2000
+  },
+  {
+    "id": "debounce",
+    "title": "Debounce Function",
+    "difficulty": "hard",
+    "description": "Implement debounce utility.",
+    "functionSignature": "function debounce(fn, delay) {}",
+    "starterCode": "function debounce(fn, delay) {\n  \n}",
+    "testCases": [],
+    "hiddenTests": [],
+    "timeLimit": 2000
+  },
+  {
+    "id": "throttle",
+    "title": "Throttle Function",
+    "difficulty": "hard",
+    "description": "Implement throttle utility.",
+    "functionSignature": "function throttle(fn, limit) {}",
+    "starterCode": "function throttle(fn, limit) {\n  \n}",
+    "testCases": [],
+    "hiddenTests": [],
+    "timeLimit": 2000
+  },
+  {
+    "id": "promise-all",
+    "title": "Promise.all Polyfill",
+    "difficulty": "hard",
+    "description": "Implement Promise.all.",
+    "functionSignature": "function promiseAll(promises) {}",
+    "starterCode": "function promiseAll(promises) {\n  \n}",
+    "testCases": [],
+    "hiddenTests": [],
+    "timeLimit": 2000
+  },
+  {
+    "id": "lru-cache",
+    "title": "LRU Cache",
+    "difficulty": "hard",
+    "description": "Design an LRU Cache.",
+    "functionSignature": "class LRUCache {}",
+    "starterCode": "class LRUCache {\n  constructor(capacity) {}\n}",
+    "testCases": [],
+    "hiddenTests": [],
+    "timeLimit": 2000
+  },
+  {
+    "id": "json-parser",
+    "title": "JSON Parser",
+    "difficulty": "hard",
+    "description": "Parse a JSON string.",
+    "functionSignature": "function parseJSON(str) {}",
+    "starterCode": "function parseJSON(str) {\n  \n}",
+    "testCases": [],
+    "hiddenTests": [],
+    "timeLimit": 2000
+  },
+  {
+    "id": "graph-path",
+    "title": "Shortest Path in Graph",
+    "difficulty": "hard",
+    "description": "Find shortest path in graph.",
+    "functionSignature": "function shortestPath(graph, start, end) {}",
+    "starterCode": "function shortestPath(graph, start, end) {\n  \n}",
+    "testCases": [],
+    "hiddenTests": [],
+    "timeLimit": 2000
+  }
+]

@@ -40,7 +40,7 @@ export default function OnboardingPage() {
     const [bio, setBio] = React.useState("")
     const [profileImage, setProfileImage] = React.useState(null)
     const [file, setFile] = React.useState(null)
-    const [loading, setLoading] = React.useState(false)
+    const [loading, setLoading] = React.useState(true) // Start loading initially
 
     // Phase 4 State
     const [socials, setSocials] = React.useState({
@@ -54,6 +54,38 @@ export default function OnboardingPage() {
     const totalSteps = 4
     const supabase = createClient()
     const router = useRouter()
+
+    React.useEffect(() => {
+        const checkProfile = async () => {
+            try {
+                const { data: { user } } = await supabase.auth.getUser()
+                if (!user) {
+                    router.push("/") // Redirect to home/login if no auth
+                    return
+                }
+
+                const { data: profile } = await supabase
+                    .from("profiles")
+                    .select("username")
+                    .eq("id", user.id)
+                    .single()
+
+                if (profile) {
+                    router.push(`/u/${profile.username}`)
+                    return
+                }
+            } catch (error) {
+                console.error("Error checking profile:", error)
+            } finally {
+                setLoading(false)
+            }
+        }
+        checkProfile()
+    }, [router, supabase])
+
+    if (loading) {
+        return <div className="min-h-screen flex items-center justify-center">Loading...</div>
+    }
 
     const handleImageUpload = (e) => {
         const selectedFile = e.target.files[0]
