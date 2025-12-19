@@ -3,6 +3,7 @@
 import * as React from "react"
 import { useRouter } from "next/navigation"
 import { Loader2 } from "lucide-react"
+import Loader from "@/components/ui/loader"
 
 export default function JoinChallengePage({ params }) {
     const router = useRouter()
@@ -49,9 +50,11 @@ export default function JoinChallengePage({ params }) {
     }, [token, router])
 
     return (
-        <div className="flex h-screen flex-col items-center justify-center p-6 bg-background space-y-4">
-            <Loader2 className="h-10 w-10 animate-spin text-primary" />
-            <p className="text-muted-foreground text-lg animate-pulse">{status}</p>
+        <div className="h-screen w-full relative bg-background">
+            <Loader />
+            <div className="absolute top-[60%] w-full text-center">
+                <p className="text-muted-foreground text-lg animate-pulse">{status}</p>
+            </div>
         </div>
     )
 }

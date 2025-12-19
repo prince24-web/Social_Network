@@ -18,64 +18,23 @@ export async function POST(request) {
             return NextResponse.json({ error: "Invite token is required." }, { status: 400 })
         }
 
-        // 1. Fetch Room details and current participants count
-        const { data: room, error: roomError } = await supabase
-            .from("challenge_rooms")
-            .select(`
-                *,
-                participants (count)
-            `)
-            .eq("invite_token", inviteToken)
-            .single()
+        // Call Security Definer Function
+        const { data, error } = await supabase.rpc('join_challenge_room', {
+            _invite_token: inviteToken
+        })
 
-        if (roomError || !room) {
-            return NextResponse.json({ error: "Invalid invite link or room not found." }, { status: 404 })
-        }
-
-        // 2. Checks
-        if (room.status !== "waiting") {
-            return NextResponse.json({ error: "This room is no longer accepting players." }, { status: 403 })
-        }
-
-        const currentPlayers = room.participants[0]?.count || 0
-        if (currentPlayers >= room.max_players) {
-            return NextResponse.json({ error: "Room is full." }, { status: 403 })
-        }
-
-        // 3. User already joined?
-        const { data: existingParticipant } = await supabase
-            .from("participants")
-            .select("id")
-            .eq("challenge_room_id", room.id)
-            .eq("user_id", user.id)
-            .single()
-
-        if (existingParticipant) {
-            // Already joined, just return success + roomId
-            return NextResponse.json({
-                success: true,
-                roomId: room.id,
-                message: "You are already in this room."
-            })
-        }
-
-        // 4. Join Room
-        const { error: joinError } = await supabase
-            .from("participants")
-            .insert({
-                user_id: user.id,
-                challenge_room_id: room.id, // Fixed: use room.id, not inviteToken
-                language: room.language // Use room's language setting for now
-            })
-
-        if (joinError) {
-            console.error("Join room error:", joinError)
+        if (error) {
+            console.error("RPC Error:", error)
             return NextResponse.json({ error: "Failed to join room." }, { status: 500 })
+        }
+
+        if (data.error) {
+            return NextResponse.json({ error: data.error }, { status: 400 })
         }
 
         return NextResponse.json({
             success: true,
-            roomId: room.id
+            roomId: data.roomId
         })
 
     } catch (error) {

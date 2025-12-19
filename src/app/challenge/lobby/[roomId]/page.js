@@ -6,6 +6,7 @@ import { createClient } from "@/utils/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Loader2, Copy, Check, Users, Play, AlertCircle } from "lucide-react"
+import Loader from "@/components/ui/loader"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 
@@ -149,7 +150,7 @@ export default function LobbyPage({ params }) {
         }
     }
 
-    if (loading) return <div className="flex h-screen items-center justify-center"><Loader2 className="animate-spin" /></div>
+    if (loading) return <div className="h-screen w-full relative bg-background"><Loader /></div>
     if (error) return <div className="flex h-screen items-center justify-center text-destructive">{error}</div>
     if (!room) return <div className="flex h-screen items-center justify-center">Room not found</div>
 

@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { Check, MapPin, Briefcase, Github, Twitter, Linkedin, Instagram, Link as LinkIcon } from "lucide-react"
+import Loader from "@/components/ui/loader"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -60,7 +61,7 @@ export default function OnboardingPage() {
             try {
                 const { data: { user } } = await supabase.auth.getUser()
                 if (!user) {
-                    router.push("/") // Redirect to home/login if no auth
+                    router.push("/")
                     return
                 }
 
@@ -74,9 +75,12 @@ export default function OnboardingPage() {
                     router.push(`/u/${profile.username}`)
                     return
                 }
+
+                // Only stop loading if we are staying on this page
+                setLoading(false)
+
             } catch (error) {
                 console.error("Error checking profile:", error)
-            } finally {
                 setLoading(false)
             }
         }
@@ -84,7 +88,11 @@ export default function OnboardingPage() {
     }, [router, supabase])
 
     if (loading) {
-        return <div className="min-h-screen flex items-center justify-center">Loading...</div>
+        return (
+            <div className="min-h-screen bg-background relative">
+                <Loader />
+            </div>
+        )
     }
 
     const handleImageUpload = (e) => {
