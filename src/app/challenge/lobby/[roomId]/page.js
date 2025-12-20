@@ -142,8 +142,8 @@ export default function LobbyPage({ params }) {
             const data = await res.json()
             if (!res.ok) throw new Error(data.error)
 
-            // Redirect handled by subscription, but we can also push here
-            // router.push(`/challenge/${roomId}`) 
+            // Manual redirect for the host (fallback/immediate)
+            router.push(`/challenge/${roomId}`)
         } catch (err) {
             alert(err.message)
             setStarting(false)
