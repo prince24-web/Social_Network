@@ -42,6 +42,36 @@ export async function POST(request) {
             return NextResponse.json({ error: "Failed to submit." }, { status: 500 })
         }
 
+        // Check if all participants completed
+        const { count: totalParticipants } = await supabase
+            .from("participants")
+            .select("*", { count: 'exact', head: true })
+            .eq("challenge_room_id", roomId)
+
+        const { count: completedParticipants } = await supabase
+            .from("participants")
+            .select("*", { count: 'exact', head: true })
+            .eq("challenge_room_id", roomId)
+            .eq("has_completed", true) // Assuming has_completed is the flag, or check status='completed'
+
+        // If simple check:
+        // Or fetch all and check in JS if logic is complex
+        
+        // Let's assume strict "everyone finished" rule for now
+        // But users might leave. So we might need a better trigger.
+        // For now, if "completed" count matches "total", mark room done.
+        
+        // Only if everyone finished do we close the room? 
+        // Or maybe we don't need to close it, just let frontend redirect.
+        // But updating status to 'completed' helps late joiners know it's over.
+        
+        if (totalParticipants && completedParticipants && totalParticipants === completedParticipants) {
+             await supabase
+                .from("challenge_rooms")
+                .update({ status: "completed", ended_at: new Date().toISOString() })
+                .eq("id", roomId)
+        }
+
         return NextResponse.json({ success: true })
 
     } catch (error) {

@@ -57,23 +57,23 @@ export default function ArenaPage({ params }) {
             setStartTime(new Date(data.room.started_at).getTime())
 
             // Initial participants fetch
-             const { data: parts } = await supabase
+            const { data: parts } = await supabase
                 .from("participants")
                 .select("*, auth.users(username, avatar_url)")
                 .eq("challenge_room_id", roomId)
-            
+
             if (parts) {
-                 // Map auth.users to simple fields if needed, or just use as is
-                 // Note: Supabase join might return array or object depending on relation one-to-one
-                 // Let's assume standard join structure
-                 setParticipants(parts)
-                 
-                 // Check if current user completed
-                 const { data: { user } } = await supabase.auth.getUser()
-                 const myPart = parts.find(p => p.user_id === user?.id)
-                 if (myPart?.status === 'completed') {
-                     setIsCompleted(true)
-                 }
+                // Map auth.users to simple fields if needed, or just use as is
+                // Note: Supabase join might return array or object depending on relation one-to-one
+                // Let's assume standard join structure
+                setParticipants(parts)
+
+                // Check if current user completed
+                const { data: { user } } = await supabase.auth.getUser()
+                const myPart = parts.find(p => p.user_id === user?.id)
+                if (myPart?.status === 'completed') {
+                    setIsCompleted(true)
+                }
             }
 
 
@@ -117,8 +117,8 @@ export default function ArenaPage({ params }) {
             .channel(`arena:${roomId}`)
             .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'participants', filter: `challenge_room_id=eq.${roomId}` }, (payload) => {
                 // Refresh participants list to show progress updates
-                 fetchData()
-                 // Or manually update the list if we want to be more efficient, but fetchData is safer
+                fetchData()
+                // Or manually update the list if we want to be more efficient, but fetchData is safer
             })
             .subscribe()
 
@@ -146,7 +146,7 @@ export default function ArenaPage({ params }) {
                 const match = sig.match(/function\s+(\w+)/)
                 if (match) functionName = match[1]
             } else if (room.language === 'python') {
-                 const sig = challenge.function_signature || challenge.functionSignature || ""
+                const sig = challenge.function_signature || challenge.functionSignature || ""
                 const match = sig.match(/def\s+(\w+)/)
                 if (match) functionName = match[1]
             }
@@ -156,10 +156,10 @@ export default function ArenaPage({ params }) {
             // Execute
             const tests = challenge.test_cases || challenge.testCases || []
             const { results, logs } = await executeCode(room.language, code, tests, functionName)
-            
+
             finalLogs = logs || []
 
-             // Update Console
+            // Update Console
             results.forEach((res, i) => {
                 const icon = res.passed ? '✅' : '❌'
                 if (res.passed) {
@@ -173,12 +173,12 @@ export default function ArenaPage({ params }) {
             })
 
             allPassed = results.every(r => r.passed)
-            
-             if (isSubmission && allPassed) {
-                 finalLogs.push({ type: 'success', content: '🏆 All Tests Passed! Submitting...' })
-             } else if (isSubmission) {
-                 finalLogs.push({ type: 'error', content: '❌ Some tests failed. Cannot submit.' })
-             }
+
+            if (isSubmission && allPassed) {
+                finalLogs.push({ type: 'success', content: '🏆 All Tests Passed! Submitting...' })
+            } else if (isSubmission) {
+                finalLogs.push({ type: 'error', content: '❌ Some tests failed. Cannot submit.' })
+            }
 
             setOutput(prev => [...prev, ...finalLogs])
 
@@ -187,14 +187,14 @@ export default function ArenaPage({ params }) {
         } finally {
             setIsRunning(false)
         }
-        
+
         return allPassed
     }
-    
+
     const handleSubmit = async () => {
         setIsSubmitting(true)
         const passed = await handleRunTests(true)
-        
+
         if (passed) {
             try {
                 await fetch("/api/challenge/submit", {
@@ -203,9 +203,14 @@ export default function ArenaPage({ params }) {
                     body: JSON.stringify({ roomId, passed: true, code })
                 })
                 setIsCompleted(true)
-                setOutput(prev => [...prev, { type: 'success', content: '🎉 Challenge Completed! Outstanding code.' }])
+                setOutput(prev => [...prev, { type: 'success', content: '🎉 Challenge Completed! Redirecting to rankings...' }])
+
+                // Redirect to ranking
+                setTimeout(() => {
+                    router.push(`/challenge/${roomId}/ranking`)
+                }, 1500)
             } catch (err) {
-                 setOutput(prev => [...prev, { type: 'error', content: 'Failed to save submission.' }])
+                setOutput(prev => [...prev, { type: 'error', content: 'Failed to save submission.' }])
             }
         }
         setIsSubmitting(false)
@@ -243,13 +248,13 @@ export default function ArenaPage({ params }) {
                         <span>{elapsedTime}</span>
                     </div>
                     {/* Live Participants Avatars could go here */}
-                    
+
                     <Button onClick={() => handleRunTests(false)} disabled={isRunning || isCompleted} variant="secondary">
                         {isRunning ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Play className="mr-2 h-4 w-4 fill-current" />}
                         Run
                     </Button>
-                    <Button 
-                        onClick={handleSubmit} 
+                    <Button
+                        onClick={handleSubmit}
                         disabled={isRunning || isSubmitting || isCompleted}
                         className={isCompleted ? "bg-green-600" : "bg-green-600 hover:bg-green-700 text-white"}
                     >
