@@ -154,7 +154,12 @@ export default function RankingPage({ params }) {
                                         #{index + 1}
                                     </div>
 
-                                    <div className="flex items-center gap-3 flex-1">
+                                    <div 
+                                        className="flex items-center gap-3 flex-1 cursor-pointer hover:opacity-80 transition-opacity"
+                                        onClick={() => {
+                                            if (p.username) router.push(`/u/${p.username}`)
+                                        }}
+                                    >
                                         <div className="h-10 w-10 rounded-full bg-muted overflow-hidden border">
                                             <img
                                                 src={p.avatar_url || `https://ui-avatars.com/api/?name=${p.username || 'User'}&background=random`}
