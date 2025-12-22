@@ -188,6 +188,11 @@ export default function RankingPage({ params }) {
                                                     <CheckCircle className="h-3 w-3" />
                                                     Solved
                                                 </Badge>
+                                            ) : (p.status === 'playing' || !p.status) ? (
+                                                <Badge variant="secondary" className="gap-1 animate-pulse">
+                                                    <Clock className="h-3 w-3" />
+                                                    Playing
+                                                </Badge>
                                             ) : (
                                                 <Badge variant="outline" className="text-muted-foreground gap-1">
                                                     <XCircle className="h-3 w-3" />
@@ -203,7 +208,15 @@ export default function RankingPage({ params }) {
                 </CardContent>
 
                 <CardFooter className="flex justify-center gap-4 py-8 bg-muted/10 rounded-b-xl">
-                    <Button variant="outline" size="lg" onClick={() => router.push('/')}>
+                    <Button variant="outline" size="lg" onClick={() => {
+                        // Find current user profile from participants list to get username
+                        const myProfile = participants.find(p => p.user_id === currentUser?.id)
+                        if (myProfile && myProfile.username) {
+                            router.push(`/u/${myProfile.username}`)
+                        } else {
+                            router.push('/')
+                        }
+                    }}>
                         <Home className="mr-2 h-4 w-4" />
                         Back Home
                     </Button>
@@ -213,3 +226,4 @@ export default function RankingPage({ params }) {
         </div>
     )
 }
+

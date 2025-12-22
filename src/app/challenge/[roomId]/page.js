@@ -197,11 +197,17 @@ export default function ArenaPage({ params }) {
 
         if (passed) {
             try {
-                await fetch("/api/challenge/submit", {
+                const res = await fetch("/api/challenge/submit", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ roomId, passed: true, code })
                 })
+
+                if (!res.ok) {
+                    const data = await res.json()
+                    throw new Error(data.error || "Submission failed")
+                }
+
                 setIsCompleted(true)
                 setOutput(prev => [...prev, { type: 'success', content: '🎉 Challenge Completed! Redirecting to rankings...' }])
 
@@ -210,7 +216,9 @@ export default function ArenaPage({ params }) {
                     router.push(`/challenge/${roomId}/ranking`)
                 }, 1500)
             } catch (err) {
-                setOutput(prev => [...prev, { type: 'error', content: 'Failed to save submission.' }])
+                console.error(err)
+                setOutput(prev => [...prev, { type: 'error', content: `Failed to save submission: ${err.message}` }])
+                // Do NOT set isCompleted true if it failed to save
             }
         }
         setIsSubmitting(false)
