@@ -2,7 +2,8 @@
 import { createClient } from "@/utils/supabase/server"
 import { notFound } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { MapPin, Briefcase, User, Github, Twitter, Linkedin, Instagram, Link as LinkIcon, MessageSquare, Users, FileText } from "lucide-react"
+import Link from "next/link"
+import { MapPin, Briefcase, User, Github, Twitter, Linkedin, Instagram, Link as LinkIcon, MessageSquare, Users, FileText, Swords } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Pill, PillAvatar } from "@/components/kibo-ui/pill"
@@ -138,6 +139,15 @@ export default async function ProfilePage({ params }) {
                             <p className="text-lg leading-relaxed max-w-2xl">
                                 {bio || "No bio yet."}
                             </p>
+
+                            <div className="pt-2">
+                                <Link href="/challenge/create">
+                                    <Button className="gap-2 font-semibold shadow-md hover:shadow-lg transition-all">
+                                        <Swords className="h-4 w-4" />
+                                        Create Challenge
+                                    </Button>
+                                </Link>
+                            </div>
                         </div>
 
                         {/* Stats Grid */}

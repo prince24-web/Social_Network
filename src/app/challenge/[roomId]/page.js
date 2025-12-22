@@ -13,9 +13,11 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import Loader from "@/components/ui/loader"
 import { executeCode } from "@/utils/code-execution"
+import { createClient } from "@/utils/supabase/client"
 
 export default function ArenaPage({ params }) {
     const router = useRouter()
+    const supabase = createClient()
 
     // State
     const [roomId, setRoomId] = React.useState(null)
@@ -25,6 +27,11 @@ export default function ArenaPage({ params }) {
     const [code, setCode] = React.useState("")
     const [output, setOutput] = React.useState([])
     const [isRunning, setIsRunning] = React.useState(false)
+    const [isSubmitting, setIsSubmitting] = React.useState(false)
+    const [startTime, setStartTime] = React.useState(null)
+    const [elapsedTime, setElapsedTime] = React.useState("00:00")
+    const [isCompleted, setIsCompleted] = React.useState(false)
+    const [participants, setParticipants] = React.useState([])
 
     // Unwrap params
     React.useEffect(() => {
@@ -36,79 +43,172 @@ export default function ArenaPage({ params }) {
     }, [params])
 
     // Fetch Data
+    const fetchData = React.useCallback(async () => {
+        if (!roomId) return
+
+        try {
+            const res = await fetch(`/api/challenge/${roomId}`)
+            const data = await res.json()
+
+            if (data.error) throw new Error(data.error)
+
+            setRoom(data.room)
+            setChallenge(data.challenge)
+            setStartTime(new Date(data.room.started_at).getTime())
+
+            // Initial participants fetch
+             const { data: parts } = await supabase
+                .from("participants")
+                .select("*, auth.users(username, avatar_url)")
+                .eq("challenge_room_id", roomId)
+            
+            if (parts) {
+                 // Map auth.users to simple fields if needed, or just use as is
+                 // Note: Supabase join might return array or object depending on relation one-to-one
+                 // Let's assume standard join structure
+                 setParticipants(parts)
+                 
+                 // Check if current user completed
+                 const { data: { user } } = await supabase.auth.getUser()
+                 const myPart = parts.find(p => p.user_id === user?.id)
+                 if (myPart?.status === 'completed') {
+                     setIsCompleted(true)
+                 }
+            }
+
+
+            // Set starter code if first load (and not already typed? - simplifying for now)
+            if (data.challenge?.starter_code && !code) {
+                setCode(data.challenge.starter_code)
+            }
+
+        } catch (err) {
+            console.error(err)
+            // alert("Failed to load challenge: " + err.message)
+        } finally {
+            setLoading(false)
+        }
+    }, [roomId, supabase, code])
+
+    React.useEffect(() => {
+        fetchData()
+    }, [fetchData])
+
+    // Timer Effect
+    React.useEffect(() => {
+        if (!startTime || isCompleted) return
+
+        const interval = setInterval(() => {
+            const now = Date.now()
+            const diff = Math.floor((now - startTime) / 1000)
+            const mins = Math.floor(diff / 60).toString().padStart(2, '0')
+            const secs = (diff % 60).toString().padStart(2, '0')
+            setElapsedTime(`${mins}:${secs}`)
+        }, 1000)
+
+        return () => clearInterval(interval)
+    }, [startTime, isCompleted])
+
+    // Realtime Subscription
     React.useEffect(() => {
         if (!roomId) return
 
-        const fetchData = async () => {
-            try {
-                const res = await fetch(`/api/challenge/${roomId}`)
-                const data = await res.json()
+        const channel = supabase
+            .channel(`arena:${roomId}`)
+            .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'participants', filter: `challenge_room_id=eq.${roomId}` }, (payload) => {
+                // Refresh participants list to show progress updates
+                 fetchData()
+                 // Or manually update the list if we want to be more efficient, but fetchData is safer
+            })
+            .subscribe()
 
-                if (data.error) throw new Error(data.error)
-
-                setRoom(data.room)
-                setChallenge(data.challenge)
-
-                // Set starter code if first load
-                if (data.challenge?.starterCode) {
-                    setCode(data.challenge.starterCode)
-                }
-
-            } catch (err) {
-                console.error(err)
-                alert("Failed to load challenge: " + err.message)
-            } finally {
-                setLoading(false)
-            }
+        return () => {
+            supabase.removeChannel(channel)
         }
-        fetchData()
-    }, [roomId])
+    }, [roomId, supabase, fetchData])
 
-    const handleRunTests = async () => {
-        if (!challenge || !room) return
+
+    const handleRunTests = async (isSubmission = false) => {
+        if (!challenge || !room) return false
 
         setIsRunning(true)
-        setOutput(prev => [...prev, { type: 'info', content: 'Running tests...' }])
+        if (!isSubmission) setOutput(prev => [...prev, { type: 'info', content: 'Running tests...' }])
+        else setOutput(prev => [...prev, { type: 'info', content: 'Submitting solution...' }])
+
+        let allPassed = false
+        let finalLogs = []
 
         try {
-            // Extract function name from signature
+            // Extract function name
             let functionName = ""
-
             if (room.language === 'javascript') {
-                const match = challenge.functionSignature.match(/function\s+(\w+)/)
+                const sig = challenge.function_signature || challenge.functionSignature || ""
+                const match = sig.match(/function\s+(\w+)/)
                 if (match) functionName = match[1]
             } else if (room.language === 'python') {
-                const match = challenge.functionSignature.match(/def\s+(\w+)/)
+                 const sig = challenge.function_signature || challenge.functionSignature || ""
+                const match = sig.match(/def\s+(\w+)/)
                 if (match) functionName = match[1]
             }
 
-            if (!functionName) {
-                throw new Error("Could not determine function name from signature.")
-            }
+            if (!functionName) throw new Error("Could not determine function name.")
 
-            const { results, logs } = await executeCode(room.language, code, challenge.testCases, functionName)
+            // Execute
+            const tests = challenge.test_cases || challenge.testCases || []
+            const { results, logs } = await executeCode(room.language, code, tests, functionName)
+            
+            finalLogs = logs || []
 
-            // Update Console
-            const newLogs = logs
+             // Update Console
             results.forEach((res, i) => {
                 const icon = res.passed ? '✅' : '❌'
                 if (res.passed) {
-                    newLogs.push({ type: 'success', content: `${icon} Test ${i + 1} Passed` })
+                    finalLogs.push({ type: 'success', content: `${icon} Test ${i + 1} Passed` })
                 } else {
-                    newLogs.push({
+                    finalLogs.push({
                         type: 'error',
                         content: `${icon} Test ${i + 1} Failed: Expected ${JSON.stringify(res.expected)}, Got ${JSON.stringify(res.actual)}`
                     })
                 }
             })
 
-            setOutput(prev => [...prev, ...newLogs])
+            allPassed = results.every(r => r.passed)
+            
+             if (isSubmission && allPassed) {
+                 finalLogs.push({ type: 'success', content: '🏆 All Tests Passed! Submitting...' })
+             } else if (isSubmission) {
+                 finalLogs.push({ type: 'error', content: '❌ Some tests failed. Cannot submit.' })
+             }
+
+            setOutput(prev => [...prev, ...finalLogs])
 
         } catch (err) {
             setOutput(prev => [...prev, { type: 'error', content: err.message }])
         } finally {
             setIsRunning(false)
         }
+        
+        return allPassed
+    }
+    
+    const handleSubmit = async () => {
+        setIsSubmitting(true)
+        const passed = await handleRunTests(true)
+        
+        if (passed) {
+            try {
+                await fetch("/api/challenge/submit", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ roomId, passed: true, code })
+                })
+                setIsCompleted(true)
+                setOutput(prev => [...prev, { type: 'success', content: '🎉 Challenge Completed! Outstanding code.' }])
+            } catch (err) {
+                 setOutput(prev => [...prev, { type: 'error', content: 'Failed to save submission.' }])
+            }
+        }
+        setIsSubmitting(false)
     }
 
     if (loading) return <div className="h-screen w-full relative bg-background"><Loader /></div>
@@ -140,18 +240,25 @@ export default function ArenaPage({ params }) {
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2 font-mono text-lg font-bold bg-muted px-3 py-1 rounded border">
                         <Clock className="h-4 w-4 text-primary" />
-                        <span>00:00</span>
+                        <span>{elapsedTime}</span>
                     </div>
-                    <Button onClick={handleRunTests} disabled={isRunning} variant="secondary">
+                    {/* Live Participants Avatars could go here */}
+                    
+                    <Button onClick={() => handleRunTests(false)} disabled={isRunning || isCompleted} variant="secondary">
                         {isRunning ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Play className="mr-2 h-4 w-4 fill-current" />}
                         Run
                     </Button>
-                    <Button className="bg-green-600 hover:bg-green-700 text-white">
-                        <CheckCircle className="mr-2 h-4 w-4" />
-                        Submit
+                    <Button 
+                        onClick={handleSubmit} 
+                        disabled={isRunning || isSubmitting || isCompleted}
+                        className={isCompleted ? "bg-green-600" : "bg-green-600 hover:bg-green-700 text-white"}
+                    >
+                        {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle className="mr-2 h-4 w-4" />}
+                        {isCompleted ? "Completed" : "Submit"}
                     </Button>
                 </div>
             </header>
+
 
             {/* Main Split Layout */}
             <div className="flex-1 overflow-hidden">
@@ -167,7 +274,7 @@ export default function ArenaPage({ params }) {
 
                                 <div className="mt-8">
                                     <h3 className="text-lg font-semibold mb-2">Examples</h3>
-                                    {challenge.testCases?.map((test, i) => (
+                                    {(challenge.test_cases || challenge.testCases)?.map((test, i) => (
                                         <div key={i} className="mb-4 bg-muted/50 p-3 rounded-lg border text-sm font-mono">
                                             <div><span className="text-muted-foreground">Input:</span> {JSON.stringify(test.input)}</div>
                                             <div className="mt-1"><span className="text-muted-foreground">Output:</span> {JSON.stringify(test.output)}</div>

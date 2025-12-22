@@ -1,8 +1,6 @@
 
 import { createClient } from "@/utils/supabase/server"
 import { NextResponse } from "next/server"
-import { promises as fs } from 'fs'
-import path from 'path'
 
 export async function POST(request) {
     try {
@@ -23,7 +21,7 @@ export async function POST(request) {
         // 1. Verify Creator
         const { data: room, error: roomError } = await supabase
             .from("challenge_rooms")
-            .select("created_by, status")
+            .select("created_by, status, language, difficulty")
             .eq("id", roomId)
             .single()
 
@@ -39,23 +37,27 @@ export async function POST(request) {
             return NextResponse.json({ error: "Challenge has already started or finished." }, { status: 400 })
         }
 
-        // --- NEW: Select Random Challenge ---
+        // --- NEW: Select Random Challenge (DB Version) ---
+        let now; // Declare now outside the try block to be accessible later
         try {
-            const langDir = room.language === 'python' ? 'python_challenges' : 'javascript_challenges'
-            const filePath = path.join(process.cwd(), 'src', 'challenges', langDir, room.difficulty, `${room.difficulty}_challenges.json`)
+            // 1. Fetch available challenges fitting criteria
+            const { data: challenges, error: fetchError } = await supabase
+                .from('challenges')
+                .select('id')
+                .eq('language', room.language)
+                .eq('difficulty', room.difficulty)
 
-            const fileContent = await fs.readFile(filePath, 'utf-8')
-            const challenges = JSON.parse(fileContent)
-
-            if (!challenges || challenges.length === 0) {
+            if (fetchError || !challenges || challenges.length === 0) {
+                console.error("Challenge fetch error:", fetchError)
                 throw new Error("No challenges found for this configuration")
             }
 
+            // 2. Pick Random
             const randomChallenge = challenges[Math.floor(Math.random() * challenges.length)]
             const selectedChallengeId = randomChallenge.id
 
-            // Update Room with Status AND Challenge ID
-            const now = new Date().toISOString()
+            // 3. Update Room
+            now = new Date().toISOString()
             const { error: updateError } = await supabase
                 .from("challenge_rooms")
                 .update({

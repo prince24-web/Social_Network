@@ -36,6 +36,13 @@ export default function LobbyPage({ params }) {
         unwrapParams()
     }, [params])
 
+    // Monitor Room Status for Redirect
+    React.useEffect(() => {
+        if (room?.status === 'active' && roomId) {
+            router.push(`/challenge/${roomId}`)
+        }
+    }, [room, roomId, router])
+
     // Initial Fetch
     React.useEffect(() => {
         if (!roomId) return
@@ -110,10 +117,6 @@ export default function LobbyPage({ params }) {
                 fetchData()
             })
             .on('postgres_changes', { event: '*', schema: 'public', table: 'challenge_rooms', filter: `id=eq.${roomId}` }, (payload) => {
-                if (payload.new.status === 'active') {
-                    // Room started!
-                    router.push(`/challenge/${roomId}`)
-                }
                 setRoom(payload.new)
             })
             .subscribe()
