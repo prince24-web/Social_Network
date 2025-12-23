@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/server"
 import { notFound } from "next/navigation"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
-import { MapPin, Briefcase, User, Github, Twitter, Linkedin, Instagram, Link as LinkIcon, MessageSquare, Users, FileText, Swords } from "lucide-react"
+import { MapPin, Briefcase, User, Github, Twitter, Linkedin, Instagram, Link as LinkIcon, MessageSquare, Users, FileText, Swords, Pencil } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Pill, PillAvatar } from "@/components/kibo-ui/pill"
@@ -26,6 +26,10 @@ export default async function ProfilePage({ params }) {
     if (!profile) {
         notFound()
     }
+
+    // Check if viewing own profile
+    const { data: { user } } = await supabase.auth.getUser()
+    const isOwnProfile = user?.id === profile.id
 
     const {
         display_name,
@@ -114,8 +118,16 @@ export default async function ProfilePage({ params }) {
                             )}
                         </div>
 
-                        {/* Action Button */}
-                        <div className="w-full mt-4">
+                        {/* Action Buttons */}
+                        <div className="w-full mt-4 space-y-2">
+                            {isOwnProfile && (
+                                <Link href="/settings/profile" className="w-full block">
+                                    <Button variant="outline" className="w-full gap-2 font-semibold">
+                                        <Pencil className="h-4 w-4" />
+                                        Edit Profile
+                                    </Button>
+                                </Link>
+                            )}
                             <Link href="/challenge/create" className="w-full block">
                                 <Button className="w-full gap-2 font-semibold shadow-md hover:shadow-lg transition-all">
                                     <Swords className="h-4 w-4" />
