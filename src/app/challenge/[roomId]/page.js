@@ -344,7 +344,7 @@ export default function ArenaPage({ params }) {
                                                     {log.content}
                                                 </div>
                                             ))}
-git co                                        </div>
+                                     </div>
                                     )}
                                 </ScrollArea>
                             </Panel>

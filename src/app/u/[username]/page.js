@@ -10,6 +10,7 @@ import { Pill, PillAvatar } from "@/components/kibo-ui/pill"
 import { TECH_STACK, EXPERIENCE_LEVELS } from "@/lib/constants"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
+import { ContributionGraphSection } from "@/components/contribution-graph-section"
 
 export default async function ProfilePage({ params }) {
     const supabase = await createClient()
@@ -167,6 +168,9 @@ export default async function ProfilePage({ params }) {
                                 )}
                             </div>
                         </div>
+
+                        {/* Activity Graph */}
+                        <ContributionGraphSection username={username} />
 
                         <Separator />
 
