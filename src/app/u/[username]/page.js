@@ -42,13 +42,7 @@ export default async function ProfilePage({ params }) {
     // Helper to get experience label
     const experienceLabel = EXPERIENCE_LEVELS.find(l => l.id === experience_level)?.label || experience_level
 
-    // Mock stats for now
-    const stats = [
-        { label: "Followers", value: "10M", icon: Users },
-        { label: "Following", value: 0, icon: Users },
-        { label: "Posts", value: 0, icon: FileText },
-        { label: "Replies", value: 0, icon: MessageSquare },
-    ]
+
 
     return (
         <div className="min-h-screen bg-background pb-20">
@@ -118,6 +112,16 @@ export default async function ProfilePage({ params }) {
                                 </a>
                             )}
                         </div>
+
+                        {/* Action Button */}
+                        <div className="w-full mt-4">
+                            <Link href="/challenge/create" className="w-full block">
+                                <Button className="w-full gap-2 font-semibold shadow-md hover:shadow-lg transition-all">
+                                    <Swords className="h-4 w-4" />
+                                    Create Challenge
+                                </Button>
+                            </Link>
+                        </div>
                     </div>
 
                     {/* Right Column: Bio, Stats, Stack */}
@@ -140,28 +144,9 @@ export default async function ProfilePage({ params }) {
                                 {bio || "No bio yet."}
                             </p>
 
-                            <div className="pt-2">
-                                <Link href="/challenge/create">
-                                    <Button className="gap-2 font-semibold shadow-md hover:shadow-lg transition-all">
-                                        <Swords className="h-4 w-4" />
-                                        Create Challenge
-                                    </Button>
-                                </Link>
-                            </div>
                         </div>
 
-                        {/* Stats Grid */}
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            {stats.map((stat, i) => (
-                                <div key={i} className="flex flex-col p-4 rounded-xl bg-card border hover:border-primary/50 transition-colors">
-                                    <span className="text-2xl font-bold">{stat.value}</span>
-                                    <div className="flex items-center gap-2 text-xs text-muted-foreground uppercase tracking-wide">
-                                        <stat.icon className="h-3 w-3" />
-                                        {stat.label}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+
 
                         {/* Tech Stack */}
                         <div className="space-y-3">
