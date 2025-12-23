@@ -161,14 +161,25 @@ export default function ArenaPage({ params }) {
 
             // Update Console
             results.forEach((res, i) => {
+                const isHidden = tests[i]?.hidden
                 const icon = res.passed ? '✅' : '❌'
                 if (res.passed) {
-                    finalLogs.push({ type: 'success', content: `${icon} Test ${i + 1} Passed` })
-                } else {
                     finalLogs.push({
-                        type: 'error',
-                        content: `${icon} Test ${i + 1} Failed: Expected ${JSON.stringify(res.expected)}, Got ${JSON.stringify(res.actual)}`
+                        type: 'success',
+                        content: `${icon} Test ${i + 1} Passed ${isHidden ? '(Hidden)' : ''}`
                     })
+                } else {
+                    if (isHidden) {
+                        finalLogs.push({
+                            type: 'error',
+                            content: `${icon} Test ${i + 1} Failed (Hidden Test)`
+                        })
+                    } else {
+                        finalLogs.push({
+                            type: 'error',
+                            content: `${icon} Test ${i + 1} Failed: Expected ${JSON.stringify(res.expected)}, Got ${JSON.stringify(res.actual)}`
+                        })
+                    }
                 }
             })
 
@@ -287,12 +298,15 @@ export default function ArenaPage({ params }) {
 
                                 <div className="mt-8">
                                     <h3 className="text-lg font-semibold mb-2">Examples</h3>
-                                    {(challenge.test_cases || challenge.testCases)?.map((test, i) => (
-                                        <div key={i} className="mb-4 bg-muted/50 p-3 rounded-lg border text-sm font-mono">
-                                            <div><span className="text-muted-foreground">Input:</span> {JSON.stringify(test.input)}</div>
-                                            <div className="mt-1"><span className="text-muted-foreground">Output:</span> {JSON.stringify(test.output)}</div>
-                                        </div>
-                                    ))}
+                                    {(challenge.test_cases || challenge.testCases)
+                                        ?.filter(test => !test.hidden)
+                                        .slice(0, 2)
+                                        .map((test, i) => (
+                                            <div key={i} className="mb-4 bg-muted/50 p-3 rounded-lg border text-sm font-mono">
+                                                <div><span className="text-muted-foreground">Input:</span> {JSON.stringify(test.input)}</div>
+                                                <div className="mt-1"><span className="text-muted-foreground">Output:</span> {JSON.stringify(test.output)}</div>
+                                            </div>
+                                        ))}
                                 </div>
                             </div>
                         </ScrollArea>
@@ -344,7 +358,7 @@ export default function ArenaPage({ params }) {
                                                     {log.content}
                                                 </div>
                                             ))}
-                                     </div>
+                                        </div>
                                     )}
                                 </ScrollArea>
                             </Panel>
