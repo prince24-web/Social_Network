@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge"
 
 export default function LobbyPage({ params }) {
     const router = useRouter()
-    const supabase = createClient()
+    const supabase = React.useMemo(() => createClient(), [])
 
     // State
     const [roomId, setRoomId] = React.useState(null)
@@ -62,19 +62,6 @@ export default function LobbyPage({ params }) {
                 if (roomError) throw roomError
                 setRoom(roomData)
 
-                // Fetch Participants
-                const { data: participantsData, error: participantsError } = await supabase
-                    .from("participants")
-                    .select("*, auth.users(username, avatar_url)") // Assuming we can join auth.users? Ideally yes if View exists or permissions allow.
-                // Wait, standard Supabase auth.users is protected. We should join 'profiles' table instead if we have one.
-                // The 'participants' table links to auth.users. 
-                // Let's assume we have a 'profiles' View or Table that we can join.
-                // Based on previous files, we have a 'profiles' table.
-                // But 'participants' has foreign key to auth.users.
-                // We need to fetch participants then fetch profiles or join manually.
-                // Using query that joins participants -> profiles (on participant.user_id = profile.id) might be tricky if not set up as FK relation in Supabase GUI.
-                // For now, let's fetch participants and if we can't join in one go, we can fetch profiles separately.
-                // Let's try simple fetch first.
 
                 // Better approach: fetch participants, then fetch profiles for those user_ids.
                 const { data: parts, error: partsError } = await supabase

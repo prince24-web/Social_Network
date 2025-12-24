@@ -12,7 +12,7 @@ import Loader from "@/components/ui/loader"
 
 export default function RankingPage({ params }) {
     const router = useRouter()
-    const supabase = createClient()
+    const supabase = React.useMemo(() => createClient(), [])
 
     const [roomId, setRoomId] = React.useState(null)
     const [room, setRoom] = React.useState(null)
@@ -154,7 +154,7 @@ export default function RankingPage({ params }) {
                                         #{index + 1}
                                     </div>
 
-                                    <div 
+                                    <div
                                         className="flex items-center gap-3 flex-1 cursor-pointer hover:opacity-80 transition-opacity"
                                         onClick={() => {
                                             if (p.username) router.push(`/u/${p.username}`)

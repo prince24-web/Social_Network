@@ -17,7 +17,7 @@ import { createClient } from "@/utils/supabase/client"
 
 export default function ArenaPage({ params }) {
     const router = useRouter()
-    const supabase = createClient()
+    const supabase = React.useMemo(() => createClient(), [])
 
     // State
     const [roomId, setRoomId] = React.useState(null)
@@ -59,18 +59,26 @@ export default function ArenaPage({ params }) {
             // Initial participants fetch
             const { data: parts } = await supabase
                 .from("participants")
-                .select("*, auth.users(username, avatar_url)")
+                .select("*")
                 .eq("challenge_room_id", roomId)
 
             if (parts) {
-                // Map auth.users to simple fields if needed, or just use as is
-                // Note: Supabase join might return array or object depending on relation one-to-one
-                // Let's assume standard join structure
-                setParticipants(parts)
+                const userIds = parts.map(p => p.user_id)
+                const { data: profiles } = await supabase
+                    .from("profiles")
+                    .select("id, username, avatar_url, display_name")
+                    .in("id", userIds)
+
+                const merged = parts.map(p => ({
+                    ...p,
+                    ...profiles?.find(pr => pr.id === p.user_id)
+                }))
+
+                setParticipants(merged)
 
                 // Check if current user completed
                 const { data: { user } } = await supabase.auth.getUser()
-                const myPart = parts.find(p => p.user_id === user?.id)
+                const myPart = merged.find(p => p.user_id === user?.id)
                 if (myPart?.status === 'completed') {
                     setIsCompleted(true)
                 }
