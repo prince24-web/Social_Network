@@ -113,14 +113,22 @@ export default function ArenaPage({ params }) {
     React.useEffect(() => {
         if (!roomId) return
 
+        console.log("Subscribing to arena participants:", roomId)
         const channel = supabase
             .channel(`arena:${roomId}`)
-            .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'participants', filter: `challenge_room_id=eq.${roomId}` }, (payload) => {
+            .on('postgres_changes', {
+                event: 'UPDATE',
+                schema: 'public',
+                table: 'participants',
+                filter: `challenge_room_id=eq.${roomId}`
+            }, (payload) => {
+                console.log("Arena participant update detected:", payload)
                 // Refresh participants list to show progress updates
                 fetchData()
-                // Or manually update the list if we want to be more efficient, but fetchData is safer
             })
-            .subscribe()
+            .subscribe((status) => {
+                console.log(`Arena subscription status for ${roomId}:`, status)
+            })
 
         return () => {
             supabase.removeChannel(channel)

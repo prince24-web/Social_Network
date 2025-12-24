@@ -110,16 +110,31 @@ export default function LobbyPage({ params }) {
         fetchData()
 
         // Subscription for Realtime
+        console.log("Subscribing to room:", roomId)
         const channel = supabase
             .channel(`room:${roomId}`)
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'participants', filter: `challenge_room_id=eq.${roomId}` }, (payload) => {
-                // Refresh data on change (simplest way for now)
+            .on('postgres_changes', {
+                event: '*',
+                schema: 'public',
+                table: 'participants',
+                filter: `challenge_room_id=eq.${roomId}`
+            }, (payload) => {
+                console.log("Participants change detected:", payload)
+                // Refresh data on change
                 fetchData()
             })
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'challenge_rooms', filter: `id=eq.${roomId}` }, (payload) => {
+            .on('postgres_changes', {
+                event: '*',
+                schema: 'public',
+                table: 'challenge_rooms',
+                filter: `id=eq.${roomId}`
+            }, (payload) => {
+                console.log("Room change detected:", payload)
                 setRoom(payload.new)
             })
-            .subscribe()
+            .subscribe((status) => {
+                console.log(`Subscription status for room:${roomId}:`, status)
+            })
 
         return () => {
             supabase.removeChannel(channel)
