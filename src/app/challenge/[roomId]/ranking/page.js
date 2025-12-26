@@ -116,8 +116,12 @@ export default function RankingPage({ params }) {
             })
             .subscribe()
 
+        // Polling Fallback (Reliability)
+        const interval = setInterval(fetchData, 3000)
+
         return () => {
             supabase.removeChannel(channel)
+            clearInterval(interval)
         }
     }, [fetchData, roomId, supabase])
 
