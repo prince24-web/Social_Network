@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Search, Bell, LogOut, User, Menu } from "lucide-react"
+import { Search, Bell, LogOut, User, Menu, Trophy } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { ModeToggle } from "@/components/mode-toggle"
@@ -87,6 +87,12 @@ export function Navbar({ user, profile }) {
                             <Link href={`/u/${profile?.username}`} className="cursor-pointer flex items-center">
                                 <User className="mr-2 h-4 w-4" />
                                 <span>Profile</span>
+                            </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                            <Link href="/leaderboard" className="cursor-pointer flex items-center">
+                                <Trophy className="mr-2 h-4 w-4" />
+                                <span>Leaderboard</span>
                             </Link>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />

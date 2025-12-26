@@ -134,6 +134,12 @@ export default async function ProfilePage({ params }) {
                                     Create Challenge
                                 </Button>
                             </Link>
+                            <Link href="/leaderboard" className="w-full block">
+                                <Button variant="secondary" className="w-full gap-2 font-semibold hover:bg-secondary/80">
+                                    <Trophy className="h-4 w-4" />
+                                    Leaderboard
+                                </Button>
+                            </Link>
                         </div>
                     </div>
 
