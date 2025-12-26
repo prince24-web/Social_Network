@@ -277,10 +277,13 @@ export default function RankingPage({ params }) {
                     <div className="flex-1 overflow-y-auto p-0 bg-zinc-950">
                         {inspectedParticipant && (
                             <CodeBlock
-                                value="javascript" // or python based on room.language, defaulting to js for now
-                                defaultValue="javascript"
+                                value={room?.language || 'javascript'}
+                                defaultValue={room?.language || 'javascript'}
                                 className="border-0 rounded-none bg-zinc-950"
-                                data={[{ language: "javascript", code: inspectedParticipant.current_code || "// No code available" }, { language: "python", code: inspectedParticipant.current_code || "# No code available" }]}
+                                data={[{
+                                    language: room?.language || 'javascript',
+                                    code: inspectedParticipant.current_code || `// No ${room?.language || 'code'} available`
+                                }]}
                             >
                                 <div className="sticky top-0 z-10 flex items-center justify-between border-b bg-zinc-900 px-4 py-2">
                                     <span className="text-xs text-muted-foreground font-mono">
@@ -289,11 +292,13 @@ export default function RankingPage({ params }) {
                                     <CodeBlockCopyButton className="text-white hover:text-white hover:bg-white/10" />
                                 </div>
                                 <CodeBlockBody>
-                                    <CodeBlockItem value={room?.language || 'javascript'}>
-                                        <CodeBlockContent language={room?.language || 'javascript'}>
-                                            {inspectedParticipant.current_code || (room?.language === 'python' ? "# No code available" : "// No code available")}
-                                        </CodeBlockContent>
-                                    </CodeBlockItem>
+                                    {(item) => (
+                                        <CodeBlockItem key={item.language} value={item.language}>
+                                            <CodeBlockContent language={item.language}>
+                                                {item.code}
+                                            </CodeBlockContent>
+                                        </CodeBlockItem>
+                                    )}
                                 </CodeBlockBody>
                             </CodeBlock>
                         )}
