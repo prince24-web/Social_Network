@@ -43,34 +43,42 @@ export default function LobbyPage({ params }) {
         }
     }, [room, roomId, router])
 
-    // Initial Fetch
+    // Fetch User ID once
     React.useEffect(() => {
+        const getUser = async () => {
+            const { data: { user } } = await supabase.auth.getUser()
+            setUserId(user?.id)
+        }
+        getUser()
+    }, [supabase])
+
+    // Centralized Data Fetcher
+    const fetchRoomData = React.useCallback(async () => {
         if (!roomId) return
 
-        const fetchData = async () => {
-            try {
-                const { data: { user } } = await supabase.auth.getUser()
-                setUserId(user?.id)
+        try {
+            // Fetch Room
+            const { data: roomData, error: roomError } = await supabase
+                .from("challenge_rooms")
+                .select("*")
+                .eq("id", roomId)
+                .single()
 
-                // Fetch Room
-                const { data: roomData, error: roomError } = await supabase
-                    .from("challenge_rooms")
-                    .select("*")
-                    .eq("id", roomId)
-                    .single()
+            if (roomError) throw roomError
 
-                if (roomError) throw roomError
-                setRoom(roomData)
+            // Update room state
+            setRoom(roomData)
 
+            // Fetch Participants
+            const { data: parts, error: partsError } = await supabase
+                .from("participants")
+                .select("user_id, language")
+                .eq("challenge_room_id", roomId)
 
-                // Better approach: fetch participants, then fetch profiles for those user_ids.
-                const { data: parts, error: partsError } = await supabase
-                    .from("participants")
-                    .select("user_id, language")
-                    .eq("challenge_room_id", roomId)
+            if (partsError) throw partsError
 
-                if (partsError) throw partsError
-
+            // Fetch Profiles for participants
+            if (parts?.length > 0) {
                 const userIds = parts.map(p => p.user_id)
                 const { data: profiles, error: profError } = await supabase
                     .from("profiles")
@@ -79,25 +87,31 @@ export default function LobbyPage({ params }) {
 
                 if (profError) throw profError
 
-                // Merge
-                const mergedParticipants = parts.map(p => {
-                    const profile = profiles.find(prof => prof.id === p.user_id)
-                    return { ...p, ...profile }
-                })
-                setParticipants(mergedParticipants)
-
-            } catch (err) {
-                console.error(err)
-                setError(err.message)
-            } finally {
-                setLoading(false)
+                // Merge participant data with profile data
+                const merged = parts.map(p => ({
+                    ...p,
+                    ...profiles?.find(pr => pr.id === p.user_id)
+                }))
+                setParticipants(merged)
+            } else {
+                setParticipants([])
             }
+
+        } catch (err) {
+            console.error("Error fetching room data:", err)
+        } finally {
+            setLoading(false)
         }
+    }, [roomId, supabase])
 
-        fetchData()
+    // Main Effect: Initial Load + Realtime + Polling
+    React.useEffect(() => {
+        if (!roomId) return
 
-        // Subscription for Realtime
-        console.log("Subscribing to room:", roomId)
+        // 1. Initial Call
+        fetchRoomData()
+
+        // 2. Realtime Subscription
         const channel = supabase
             .channel(`room:${roomId}`)
             .on('postgres_changes', {
@@ -105,10 +119,9 @@ export default function LobbyPage({ params }) {
                 schema: 'public',
                 table: 'participants',
                 filter: `challenge_room_id=eq.${roomId}`
-            }, (payload) => {
-                console.log("Participants change detected:", payload)
-                // Refresh data on change
-                fetchData()
+            }, () => {
+                console.log("Realtime: Participants updated")
+                fetchRoomData()
             })
             .on('postgres_changes', {
                 event: '*',
@@ -116,18 +129,20 @@ export default function LobbyPage({ params }) {
                 table: 'challenge_rooms',
                 filter: `id=eq.${roomId}`
             }, (payload) => {
-                console.log("Room change detected:", payload)
-                setRoom(payload.new)
+                console.log("Realtime: Room updated", payload)
+                setRoom(payload.new) // Optimistic update
             })
-            .subscribe((status) => {
-                console.log(`Subscription status for room:${roomId}:`, status)
-            })
+            .subscribe()
 
+        // 3. Polling Interval (Backup for Realtime)
+        const interval = setInterval(fetchRoomData, 3000)
+
+        // Cleanup
         return () => {
             supabase.removeChannel(channel)
+            clearInterval(interval)
         }
-
-    }, [roomId, supabase, router])
+    }, [roomId, supabase, fetchRoomData])
 
 
     const handleCopy = () => {
