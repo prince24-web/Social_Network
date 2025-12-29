@@ -3,10 +3,12 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { Home, Hash, Users, MessageSquare, Bookmark, Settings, Code, Zap } from "lucide-react"
+import { Home, Hash, Users, MessageSquare, Bookmark, Settings, Code, Zap, Trophy } from "lucide-react"
 
 const sidebarItems = [
     { icon: Home, label: "My Feed", href: "/" },
+    { icon: Zap, label: "Training", href: "/training" },
+    { icon: Trophy, label: "Leaderboard", href: "/leaderboard" },
     { icon: Hash, label: "Explore", href: "/explore" },
     { icon: Users, label: "Groups", href: "/groups" },
     { icon: MessageSquare, label: "Messages", href: "/messages", badge: 3 },

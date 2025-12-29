@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/server"
 import { notFound } from "next/navigation"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
-import { MapPin, Briefcase, User, Github, Twitter, Linkedin, Instagram, Link as LinkIcon, MessageSquare, Users, FileText, Swords, Pencil, Trophy } from "lucide-react"
+import { MapPin, Briefcase, User, Github, Twitter, Linkedin, Instagram, Link as LinkIcon, MessageSquare, Users, FileText, Swords, Pencil, Trophy, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Pill, PillAvatar } from "@/components/kibo-ui/pill"
@@ -134,6 +134,14 @@ export default async function ProfilePage({ params }) {
                                     Create Challenge
                                 </Button>
                             </Link>
+                            {isOwnProfile && (
+                                <Link href="/training" className="w-full block">
+                                    <Button className="w-full gap-2 font-semibold bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white shadow-md hover:shadow-lg transition-all">
+                                        <Zap className="h-4 w-4" />
+                                        Training Mode
+                                    </Button>
+                                </Link>
+                            )}
                             <Link href="/leaderboard" className="w-full block">
                                 <Button variant="secondary" className="w-full gap-2 font-semibold hover:bg-secondary/80">
                                     <Trophy className="h-4 w-4" />

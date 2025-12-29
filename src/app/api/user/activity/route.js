@@ -31,31 +31,48 @@ export async function GET(request) {
         // Get submissions from the past 365 days
         const today = new Date();
         const startDate = subDays(today, 365);
+        const isoStartDate = startDate.toISOString();
 
-        const { data: submissions, error: submissionsError } = await supabase
+        // 1. Fetch Challenge Participants (Multiplayer)
+        const { data: multiplayerSubmissions, error: mpError } = await supabase
             .from("participants")
             .select("last_submitted_at")
             .eq("user_id", userId)
-            .gte("last_submitted_at", startDate.toISOString())
+            .gte("last_submitted_at", isoStartDate)
             .not("last_submitted_at", "is", null);
 
-        if (submissionsError) {
-            console.error("Error fetching submissions:", submissionsError);
-            return NextResponse.json(
-                { error: "Failed to fetch activity" },
-                { status: 500 }
-            );
+        if (mpError) {
+            console.error("Error fetching multiplayer submissions:", mpError);
+        }
+
+        // 2. Fetch Training Submissions (Solo practice)
+        const { data: trainingSubmissions, error: trainingError } = await supabase
+            .from("training_submissions")
+            .select("submitted_at")
+            .eq("user_id", userId)
+            .gte("submitted_at", isoStartDate);
+
+        if (trainingError) {
+            console.error("Error fetching training submissions:", trainingError);
         }
 
         // Group submissions by date
         const activityMap = new Map();
 
-        for (const sub of submissions || []) {
-            const date = formatISO(parseISO(sub.last_submitted_at), {
+        const processSubmission = (dateString) => {
+            if (!dateString) return;
+            const date = formatISO(parseISO(dateString), {
                 representation: "date",
             });
             activityMap.set(date, (activityMap.get(date) || 0) + 1);
         }
+
+        // Process Multiplayer
+        (multiplayerSubmissions || []).forEach(sub => processSubmission(sub.last_submitted_at));
+
+        // Process Training
+        (trainingSubmissions || []).forEach(sub => processSubmission(sub.submitted_at));
+
 
         // Generate activity data for each day in the range
         const days = eachDayOfInterval({ start: startDate, end: today });
