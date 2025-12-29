@@ -19,17 +19,20 @@ export async function GET(request) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
 
-        // 1. Fetch solved challenge IDs
-        const { data: solved, error: solvedError } = await supabase
+        // 1. Fetch solved count
+        // Note: Distinct challenge_ids in case of multiple submissions? 
+        // training_submissions doesn't enforce unique constraint on (user_id, challenge_id) yet but we should count unique.
+
+        const { data: solvedData, error: solvedError } = await supabase
             .from("training_submissions")
             .select("challenge_id")
             .eq("user_id", user.id)
 
         if (solvedError) throw solvedError
 
-        const solvedIds = new Set(solved?.map(s => s.challenge_id) || [])
+        // Filter solved by language (requires join or fetch challenges first)
+        // Optimized approach: Fetch all challenges for language first.
 
-        // 2. Fetch all challenges for language
         const { data: challenges, error: challengesError } = await supabase
             .from("challenges")
             .select("id, difficulty")
@@ -37,23 +40,36 @@ export async function GET(request) {
 
         if (challengesError) throw challengesError
 
-        // 3. Sort by difficulty order
+        const challengeIds = new Set(challenges.map(c => c.id))
+        const solvedSet = new Set()
+
+        solvedData.forEach(sub => {
+            if (challengeIds.has(sub.challenge_id)) {
+                solvedSet.add(sub.challenge_id)
+            }
+        })
+
+        const solvedCount = solvedSet.size
+        const totalCount = challenges.length
+
+        // Determine next difficulty
+        // Re-use logic: sort challenges, find first unsolved
         const difficultyOrder = { 'easy': 1, 'medium': 2, 'hard': 3 }
         const sortedChallenges = challenges.sort((a, b) => {
             return difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty]
         })
 
-        // 4. Find first unsolved
-        const nextChallenge = sortedChallenges.find(c => !solvedIds.has(c.id))
+        const nextChallenge = sortedChallenges.find(c => !solvedSet.has(c.id))
+        const nextDifficulty = nextChallenge ? nextChallenge.difficulty : "completed"
 
-        if (!nextChallenge) {
-            return NextResponse.json({ message: "All challenges completed!", completed: true })
-        }
-
-        return NextResponse.json({ challengeId: nextChallenge.id, difficulty: nextChallenge.difficulty })
+        return NextResponse.json({
+            solvedCount,
+            totalCount,
+            nextDifficulty
+        })
 
     } catch (err) {
-        console.error("Error fetching training challenge:", err)
+        console.error("Error fetching progress:", err)
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 })
     }
 }
