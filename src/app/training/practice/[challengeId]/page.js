@@ -357,12 +357,12 @@ export default function PracticeArenaPage({ params }) {
                     </div>
 
                     <DialogFooter className="sm:justify-between gap-4">
-                        <Button variant="secondary" onClick={() => router.push("/training")} className="w-full sm:w-auto">
-                            <ArrowRight className="w-4 h-4 mr-2 rotate-180" />
-                            Next Challenge
-                        </Button>
-                        <Button onClick={() => router.push("/leaderboard")} className="w-full sm:w-auto">
+                        <Button variant="secondary" onClick={() => router.push("/leaderboard")} className="w-full sm:w-auto">
+                            <Trophy className="w-4 h-4 mr-2" />
                             Check Leaderboard
+                        </Button>
+                        <Button onClick={() => router.push("/training")} className="w-full sm:w-auto">
+                            Next Challenge
                             <ArrowRight className="w-4 h-4 ml-2" />
                         </Button>
                     </DialogFooter>
