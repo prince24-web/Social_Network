@@ -12,14 +12,21 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "DevDuel",
-  description: "A platform where developers challenge each other by solving coding problems.",
+  title: "DevDuel - The Ultimate Coding Battle Platform",
+  description: "Join DevDuel to practice coding, compete in real-time battles, and master algorithms in Python, JavaScript, and C++.",
+  keywords: ["coding challenges", "dev duel", "programming battles", "learn python", "learn javascript", "coding interview prep"],
   icons: {
     icon: "/devduel.jpg",
     apple: "/devduel.jpg",
   },
   openGraph: {
     images: ["/devduel.jpg"],
+    title: "DevDuel - The Ultimate Coding Battle Platform",
+    description: "Battle real players, solve complex algorithms, and level up your development skills.",
+    url: "https://devduel.com",
+    siteName: "DevDuel",
+    locale: "en_US",
+    type: "website",
   },
 };
 
