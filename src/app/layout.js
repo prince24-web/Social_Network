@@ -23,7 +23,7 @@ export const metadata = {
     images: ["/devduel.jpg"],
     title: "DevDuel - The Ultimate Coding Battle Platform",
     description: "Battle real players, solve complex algorithms, and level up your development skills.",
-    url: "https://devduel.com",
+    url: "https://devduel.space",
     siteName: "DevDuel",
     locale: "en_US",
     type: "website",
