@@ -6,7 +6,7 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels"
 import Editor from "@monaco-editor/react"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
-import { Loader2, Play, CheckCircle, Terminal, Clock, ChevronLeft } from "lucide-react"
+import { Loader2, Play, CheckCircle, Terminal, Clock, ChevronLeft, Maximize2, Minimize2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -32,6 +32,8 @@ export default function ArenaPage({ params }) {
     const [elapsedTime, setElapsedTime] = React.useState("00:00")
     const [isCompleted, setIsCompleted] = React.useState(false)
     const [participants, setParticipants] = React.useState([])
+    const [isMobile, setIsMobile] = React.useState(false)
+    const [isEditorFullscreen, setIsEditorFullscreen] = React.useState(false)
 
     // Unwrap params
     React.useEffect(() => {
@@ -40,6 +42,13 @@ export default function ArenaPage({ params }) {
             setRoomId(resolvedParams.roomId)
         }
         unwrapParams()
+
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768)
+        }
+        checkMobile()
+        window.addEventListener('resize', checkMobile)
+        return () => window.removeEventListener('resize', checkMobile)
     }, [params])
 
     // Fetch Data
@@ -264,50 +273,50 @@ export default function ArenaPage({ params }) {
         <div className="h-screen w-full flex flex-col bg-background text-foreground overflow-hidden">
             {/* Top Bar */}
             <header className="h-14 border-b flex items-center justify-between px-4 bg-muted/20 shrink-0">
-                <div className="flex items-center gap-4">
-                    <Button variant="ghost" size="icon" onClick={() => router.back()}>
+                <div className="flex items-center gap-2 sm:gap-4">
+                    <Button variant="ghost" size="icon" onClick={() => router.back()} className="h-8 w-8">
                         <ChevronLeft className="h-5 w-5" />
                     </Button>
-                    <div className="flex flex-col">
-                        <h1 className="font-bold text-sm sm:text-base truncate max-w-[200px]">{challenge.title}</h1>
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-primary/20">{room.language}</Badge>
-                            <span className="capitalize">{room.difficulty}</span>
+                    <div className="flex flex-col min-w-0">
+                        <h1 className="font-bold text-xs sm:text-base truncate max-w-[120px] sm:max-w-[200px]">{challenge.title}</h1>
+                        <div className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs text-muted-foreground">
+                            <Badge variant="outline" className="text-[9px] sm:text-[10px] px-1 sm:px-1.5 py-0 border-primary/20">{room.language}</Badge>
+                            <span className="capitalize hidden sm:inline">{room.difficulty}</span>
                         </div>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2 font-mono text-lg font-bold bg-muted px-3 py-1 rounded border">
-                        <Clock className="h-4 w-4 text-primary" />
+                <div className="flex items-center gap-2 sm:gap-4">
+                    <div className="flex items-center gap-1.5 sm:gap-2 font-mono text-sm sm:text-lg font-bold bg-muted px-2 sm:px-3 py-1 rounded border">
+                        <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
                         <span>{elapsedTime}</span>
                     </div>
-                    {/* Live Participants Avatars could go here */}
 
-                    <Button onClick={() => handleRunTests(false)} disabled={isRunning || isCompleted} variant="secondary">
-                        {isRunning ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Play className="mr-2 h-4 w-4 fill-current" />}
-                        Run
+                    <Button onClick={() => handleRunTests(false)} disabled={isRunning || isCompleted} variant="secondary" size={isMobile ? "sm" : "default"}>
+                        {isRunning ? <Loader2 className="h-4 w-4 animate-spin" /> : <Play className="h-4 w-4 fill-current sm:mr-2" />}
+                        <span className="hidden sm:inline">Run</span>
                     </Button>
                     <Button
                         onClick={handleSubmit}
                         disabled={isRunning || isSubmitting || isCompleted}
                         className={isCompleted ? "bg-green-600" : "bg-green-600 hover:bg-green-700 text-white"}
+                        size={isMobile ? "sm" : "default"}
                     >
-                        {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle className="mr-2 h-4 w-4" />}
-                        {isCompleted ? "Completed" : "Submit"}
+                        {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle className="h-4 w-4 sm:mr-2" />}
+                        <span className="hidden sm:inline">{isCompleted ? "Completed" : "Submit"}</span>
                     </Button>
                 </div>
             </header>
 
 
             {/* Main Split Layout */}
-            <div className="flex-1 overflow-hidden">
-                <PanelGroup direction="horizontal">
+            <div className="flex-1 overflow-hidden relative">
+                <PanelGroup direction={isMobile ? "vertical" : "horizontal"}>
 
                     {/* Left Panel: Instructions */}
-                    <Panel defaultSize={40} minSize={20}>
+                    <Panel defaultSize={isMobile ? 30 : 40} minSize={20}>
                         <ScrollArea className="h-full">
-                            <div className="p-6 prose prose-invert max-w-none">
+                            <div className="p-4 sm:p-6 prose prose-invert max-w-none">
                                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                                     {challenge.description || "No description provided."}
                                 </ReactMarkdown>
@@ -328,56 +337,82 @@ export default function ArenaPage({ params }) {
                         </ScrollArea>
                     </Panel>
 
-                    <PanelResizeHandle className="w-1 bg-border hover:bg-primary/50 transition-colors cursor-col-resize" />
+                    <PanelResizeHandle className={isMobile ? "h-1 bg-border hover:bg-primary/50 transition-colors cursor-row-resize" : "w-1 bg-border hover:bg-primary/50 transition-colors cursor-col-resize"} />
 
                     {/* Right Panel: Editor & Output */}
-                    <Panel defaultSize={60} minSize={30}>
+                    <Panel defaultSize={isMobile ? 70 : 60} minSize={30}>
                         <PanelGroup direction="vertical">
 
                             {/* Editor */}
-                            <Panel defaultSize={70} minSize={20}>
-                                <Editor
-                                    height="100%"
-                                    defaultLanguage={room.language === "python" ? "python" : "javascript"}
-                                    theme="vs-dark"
-                                    value={code}
-                                    onChange={(value) => setCode(value)}
-                                    options={{
-                                        minimap: { enabled: false },
-                                        fontSize: 14,
-                                        scrollBeyondLastLine: false,
-                                        automaticLayout: true,
-                                        padding: { top: 16 }
-                                    }}
-                                />
+                            <Panel defaultSize={70} minSize={20} className={isEditorFullscreen ? "fixed inset-0 z-50 bg-background flex flex-col" : "relative flex flex-col"}>
+                                {/* Editor Toolbar */}
+                                <div className="flex items-center justify-between px-4 py-1 bg-muted/30 border-b">
+                                    <span className="text-[10px] font-mono text-muted-foreground uppercase">Editor</span>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-6 w-6"
+                                        onClick={() => setIsEditorFullscreen(!isEditorFullscreen)}
+                                    >
+                                        {isEditorFullscreen ? <Minimize2 className="h-3 w-3" /> : <Maximize2 className="h-3 w-3" />}
+                                    </Button>
+                                </div>
+                                <div className="flex-1 min-h-0">
+                                    <Editor
+                                        height="100%"
+                                        defaultLanguage={room.language === "python" ? "python" : "javascript"}
+                                        theme="vs-dark"
+                                        value={code}
+                                        onChange={(value) => setCode(value)}
+                                        options={{
+                                            minimap: { enabled: false },
+                                            fontSize: isMobile ? 12 : 14,
+                                            scrollBeyondLastLine: false,
+                                            automaticLayout: true,
+                                            padding: { top: 16 }
+                                        }}
+                                    />
+                                </div>
+                                {isEditorFullscreen && (
+                                    <div className="p-2 border-t flex justify-end gap-2 bg-muted/10">
+                                        <Button size="sm" variant="secondary" onClick={() => handleRunTests(false)} disabled={isRunning || isCompleted}>
+                                            <Play className="h-3 w-3 mr-1" /> Run
+                                        </Button>
+                                        <Button size="sm" className="bg-green-600 hover:bg-green-700" onClick={handleSubmit} disabled={isRunning || isSubmitting || isCompleted}>
+                                            <CheckCircle className="h-3 w-3 mr-1" /> Submit
+                                        </Button>
+                                    </div>
+                                )}
                             </Panel>
 
-                            <PanelResizeHandle className="h-1 bg-border hover:bg-primary/50 transition-colors cursor-row-resize" />
+                            {!isEditorFullscreen && <PanelResizeHandle className="h-1 bg-border hover:bg-primary/50 transition-colors cursor-row-resize" />}
 
                             {/* Output/Console */}
-                            <Panel defaultSize={30} minSize={10} className="bg-muted/10 flex flex-col">
-                                <div className="flex items-center gap-2 px-4 py-2 border-b bg-muted/20 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                                    <Terminal className="h-4 w-4" />
-                                    Console Output
-                                </div>
-                                <ScrollArea className="flex-1 font-mono text-sm p-4">
-                                    {output.length === 0 ? (
-                                        <div className="text-muted-foreground italic">Click 'Run' to see output...</div>
-                                    ) : (
-                                        <div className="flex flex-col gap-1">
-                                            {output.map((log, i) => (
-                                                <div key={i} className={
-                                                    log.type === 'error' ? 'text-red-400' :
-                                                        log.type === 'success' ? 'text-green-400' :
-                                                            'text-foreground'
-                                                }>
-                                                    {log.content}
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </ScrollArea>
-                            </Panel>
+                            {!isEditorFullscreen && (
+                                <Panel defaultSize={30} minSize={10} className="bg-muted/10 flex flex-col">
+                                    <div className="flex items-center gap-2 px-4 py-2 border-b bg-muted/20 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                                        <Terminal className="h-4 w-4" />
+                                        Console Output
+                                    </div>
+                                    <ScrollArea className="flex-1 font-mono text-sm p-4 text-xs sm:text-sm">
+                                        {output.length === 0 ? (
+                                            <div className="text-muted-foreground italic">Click 'Run' to see output...</div>
+                                        ) : (
+                                            <div className="flex flex-col gap-1">
+                                                {output.map((log, i) => (
+                                                    <div key={i} className={
+                                                        log.type === 'error' ? 'text-red-400' :
+                                                            log.type === 'success' ? 'text-green-400' :
+                                                                'text-foreground'
+                                                    }>
+                                                        {log.content}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </ScrollArea>
+                                </Panel>
+                            )}
 
                         </PanelGroup>
                     </Panel>
