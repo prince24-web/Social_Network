@@ -42,6 +42,8 @@ export default function OnboardingPage() {
     const [profileImage, setProfileImage] = React.useState(null)
     const [file, setFile] = React.useState(null)
     const [loading, setLoading] = React.useState(true) // Start loading initially
+    const [usernameError, setUsernameError] = React.useState("")
+
 
     // Phase 4 State
     const [socials, setSocials] = React.useState({
@@ -175,6 +177,17 @@ export default function OnboardingPage() {
     }
 
     const handleNext = () => {
+        if (currentStep === 3) {
+            if (!username) {
+                setUsernameError("Username is required")
+                return
+            }
+            if (username.includes("@")) {
+                setUsernameError("Username cannot contain @")
+                return
+            }
+            setUsernameError("")
+        }
         if (currentStep < totalSteps) {
             setCurrentStep((prev) => prev + 1)
         }
@@ -405,11 +418,27 @@ export default function OnboardingPage() {
                                 <Label htmlFor="username">Username</Label>
                                 <Input
                                     id="username"
-                                    placeholder="@developer_xyz"
+                                    placeholder="developer_xyz"
                                     value={username}
-                                    onChange={(e) => setUsername(e.target.value)}
-                                    className="text-center text-lg md:text-left md:text-base"
+                                    onChange={(e) => {
+                                        const val = e.target.value
+                                        setUsername(val)
+                                        if (val.includes("@")) {
+                                            setUsernameError("Username cannot contain @")
+                                        } else {
+                                            setUsernameError("")
+                                        }
+                                    }}
+                                    className={cn(
+                                        "text-center text-lg md:text-left md:text-base",
+                                        usernameError && "border-destructive focus-visible:ring-destructive"
+                                    )}
                                 />
+                                {usernameError && (
+                                    <p className="text-xs text-destructive font-medium">
+                                        {usernameError}
+                                    </p>
+                                )}
                                 <p className="text-xs text-muted-foreground">
                                     This is your public display name.
                                 </p>
@@ -529,7 +558,10 @@ export default function OnboardingPage() {
                     >
                         Previous
                     </Button>
-                    <Button onClick={currentStep === totalSteps ? handleSubmit : handleNext} disabled={loading}>
+                    <Button
+                        onClick={currentStep === totalSteps ? handleSubmit : handleNext}
+                        disabled={loading || (currentStep === 3 && (!!usernameError || !username))}
+                    >
                         {loading ? "Saving..." : (currentStep === totalSteps ? "Finish" : "Next")}
                     </Button>
                 </div>

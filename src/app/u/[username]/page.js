@@ -128,26 +128,28 @@ export default async function ProfilePage({ params }) {
                                     </Button>
                                 </Link>
                             )}
-                            <Link href="/challenge/create" className="w-full block">
-                                <Button className="w-full gap-2 font-semibold shadow-md hover:shadow-lg transition-all">
-                                    <Swords className="h-4 w-4" />
-                                    Create Challenge
-                                </Button>
-                            </Link>
                             {isOwnProfile && (
-                                <Link href="/training" className="w-full block">
-                                    <Button className="w-full gap-2 font-semibold bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white shadow-md hover:shadow-lg transition-all">
-                                        <Zap className="h-4 w-4" />
-                                        Training Mode
-                                    </Button>
-                                </Link>
+                                <>
+                                    <Link href="/challenge/create" className="w-full block">
+                                        <Button className="w-full gap-2 font-semibold shadow-md hover:shadow-lg transition-all">
+                                            <Swords className="h-4 w-4" />
+                                            Create Challenge
+                                        </Button>
+                                    </Link>
+                                    <Link href="/training" className="w-full block">
+                                        <Button className="w-full gap-2 font-semibold bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white shadow-md hover:shadow-lg transition-all">
+                                            <Zap className="h-4 w-4" />
+                                            Training Mode
+                                        </Button>
+                                    </Link>
+                                    <Link href="/leaderboard" className="w-full block">
+                                        <Button variant="secondary" className="w-full gap-2 font-semibold hover:bg-secondary/80">
+                                            <Trophy className="h-4 w-4" />
+                                            Leaderboard
+                                        </Button>
+                                    </Link>
+                                </>
                             )}
-                            <Link href="/leaderboard" className="w-full block">
-                                <Button variant="secondary" className="w-full gap-2 font-semibold hover:bg-secondary/80">
-                                    <Trophy className="h-4 w-4" />
-                                    Leaderboard
-                                </Button>
-                            </Link>
                         </div>
                     </div>
 
