@@ -360,7 +360,10 @@ export default function ArenaPage({ params }) {
                                 <div className="flex-1 min-h-0">
                                     <Editor
                                         height="100%"
-                                        defaultLanguage={room.language === "python" ? "python" : "javascript"}
+                                        defaultLanguage={
+                                            room.language === "python" ? "python" :
+                                                room.language === "cpp" ? "cpp" : "javascript"
+                                        }
                                         theme="vs-dark"
                                         value={code}
                                         onChange={(value) => setCode(value)}

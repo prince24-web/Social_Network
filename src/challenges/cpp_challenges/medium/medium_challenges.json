@@ -1,0 +1,357 @@
+[
+    {
+        "id": "valid-parentheses-cpp",
+        "title": "Valid Parentheses",
+        "difficulty": "medium",
+        "language": "cpp",
+        "description": "Check if parentheses are valid.",
+        "functionSignature": "bool isValid(std::string s)",
+        "starterCode": "#include <string>\n#include <stack>\n\nbool isValid(std::string s) {\n    \n}",
+        "testCases": [
+            {
+                "input": [
+                    "()[]{}"
+                ],
+                "output": true
+            },
+            {
+                "input": [
+                    "(]"
+                ],
+                "output": false
+            }
+        ],
+        "hiddenTests": [
+            {
+                "input": [
+                    "((()))"
+                ],
+                "output": true
+            }
+        ],
+        "timeLimit": 2000
+    },
+    {
+        "id": "longest-word-cpp",
+        "title": "Longest Word",
+        "difficulty": "medium",
+        "language": "cpp",
+        "description": "Return the longest word in a sentence.",
+        "functionSignature": "std::string longestWord(std::string sentence)",
+        "starterCode": "#include <string>\n#include <sstream>\n#include <vector>\n\nstd::string longestWord(std::string sentence) {\n    \n}",
+        "testCases": [
+            {
+                "input": [
+                    "I love C++"
+                ],
+                "output": "C++"
+            }
+        ],
+        "hiddenTests": [
+            {
+                "input": [
+                    "a bb ccc"
+                ],
+                "output": "ccc"
+            }
+        ],
+        "timeLimit": 2000
+    },
+    {
+        "id": "remove-duplicates-cpp",
+        "title": "Remove Duplicates",
+        "difficulty": "medium",
+        "language": "cpp",
+        "description": "Remove duplicates from an array, maintaining order.",
+        "functionSignature": "std::vector<int> removeDuplicates(std::vector<int>& nums)",
+        "starterCode": "#include <vector>\n#include <algorithm>\n#include <set>\n\nstd::vector<int> removeDuplicates(std::vector<int>& nums) {\n    \n}",
+        "testCases": [
+            {
+                "input": [
+                    [
+                        1,
+                        1,
+                        2,
+                        3
+                    ]
+                ],
+                "output": [
+                    1,
+                    2,
+                    3
+                ]
+            }
+        ],
+        "hiddenTests": [
+            {
+                "input": [
+                    [
+                        5,
+                        5,
+                        5
+                    ]
+                ],
+                "output": [
+                    5
+                ]
+            }
+        ],
+        "timeLimit": 2000
+    },
+    {
+        "id": "fibonacci-cpp",
+        "title": "Fibonacci Number",
+        "difficulty": "medium",
+        "language": "cpp",
+        "description": "Return the nth Fibonacci number.",
+        "functionSignature": "int fibonacci(int n)",
+        "starterCode": "int fibonacci(int n) {\n    \n}",
+        "testCases": [
+            {
+                "input": [
+                    5
+                ],
+                "output": 5
+            }
+        ],
+        "hiddenTests": [
+            {
+                "input": [
+                    0
+                ],
+                "output": 0
+            }
+        ],
+        "timeLimit": 2000
+    },
+    {
+        "id": "array-chunk-cpp",
+        "title": "Array Chunk",
+        "difficulty": "medium",
+        "language": "cpp",
+        "description": "Split array into chunks of given size.",
+        "functionSignature": "std::vector<std::vector<int>> chunkArray(std::vector<int>& arr, int size)",
+        "starterCode": "#include <vector>\n\nstd::vector<std::vector<int>> chunkArray(std::vector<int>& arr, int size) {\n    \n}",
+        "testCases": [
+            {
+                "input": [
+                    [
+                        1,
+                        2,
+                        3,
+                        4
+                    ],
+                    2
+                ],
+                "output": [
+                    [
+                        1,
+                        2
+                    ],
+                    [
+                        3,
+                        4
+                    ]
+                ]
+            }
+        ],
+        "hiddenTests": [
+            {
+                "input": [
+                    [
+                        1,
+                        2,
+                        3
+                    ],
+                    1
+                ],
+                "output": [
+                    [
+                        1
+                    ],
+                    [
+                        2
+                    ],
+                    [
+                        3
+                    ]
+                ]
+            }
+        ],
+        "timeLimit": 2000
+    },
+    {
+        "id": "anagram-cpp",
+        "title": "Valid Anagram",
+        "difficulty": "medium",
+        "language": "cpp",
+        "description": "Check if two strings are anagrams.",
+        "functionSignature": "bool isAnagram(std::string s, std::string t)",
+        "starterCode": "#include <string>\n#include <algorithm>\n\nbool isAnagram(std::string s, std::string t) {\n    \n}",
+        "testCases": [
+            {
+                "input": [
+                    "anagram",
+                    "nagaram"
+                ],
+                "output": true
+            }
+        ],
+        "hiddenTests": [
+            {
+                "input": [
+                    "rat",
+                    "car"
+                ],
+                "output": false
+            }
+        ],
+        "timeLimit": 2000
+    },
+    {
+        "id": "max-subarray-cpp",
+        "title": "Maximum Subarray Sum",
+        "difficulty": "medium",
+        "language": "cpp",
+        "description": "Find the maximum sum of a contiguous subarray.",
+        "functionSignature": "int maxSubArray(std::vector<int>& nums)",
+        "starterCode": "#include <vector>\n#include <algorithm>\n\nint maxSubArray(std::vector<int>& nums) {\n    \n}",
+        "testCases": [
+            {
+                "input": [
+                    [
+                        -2,
+                        1,
+                        -3,
+                        4,
+                        -1,
+                        2,
+                        1,
+                        -5,
+                        4
+                    ]
+                ],
+                "output": 6
+            }
+        ],
+        "hiddenTests": [
+            {
+                "input": [
+                    [
+                        1
+                    ]
+                ],
+                "output": 1
+            }
+        ],
+        "timeLimit": 2000
+    },
+    {
+        "id": "flatten-array-cpp",
+        "title": "Flatten Integer Array",
+        "difficulty": "medium",
+        "language": "cpp",
+        "description": "Flatten a 2D array into 1D (C++ version simplifies nested structures).",
+        "functionSignature": "std::vector<int> flatten(std::vector<std::vector<int>>& arr)",
+        "starterCode": "#include <vector>\n\nstd::vector<int> flatten(std::vector<std::vector<int>>& arr) {\n    \n}",
+        "testCases": [
+            {
+                "input": [
+                    [
+                        [
+                            1
+                        ],
+                        [
+                            2
+                        ],
+                        [
+                            3
+                        ]
+                    ]
+                ],
+                "output": [
+                    1,
+                    2,
+                    3
+                ]
+            }
+        ],
+        "hiddenTests": [
+            {
+                "input": [
+                    []
+                ],
+                "output": []
+            }
+        ],
+        "timeLimit": 2000
+    },
+    {
+        "id": "string-compress-cpp",
+        "title": "String Compression",
+        "difficulty": "medium",
+        "language": "cpp",
+        "description": "Compress repeated characters.",
+        "functionSignature": "std::string compress(std::string str)",
+        "starterCode": "#include <string>\n\nstd::string compress(std::string str) {\n    \n}",
+        "testCases": [
+            {
+                "input": [
+                    "aaabb"
+                ],
+                "output": "a3b2"
+            }
+        ],
+        "hiddenTests": [
+            {
+                "input": [
+                    "a"
+                ],
+                "output": "a1"
+            }
+        ],
+        "timeLimit": 2000
+    },
+    {
+        "id": "rotate-array-cpp",
+        "title": "Rotate Array",
+        "difficulty": "medium",
+        "language": "cpp",
+        "description": "Rotate array k times to the right.",
+        "functionSignature": "std::vector<int> rotate(std::vector<int>& nums, int k)",
+        "starterCode": "#include <vector>\n#include <algorithm>\n\nstd::vector<int> rotate(std::vector<int>& nums, int k) {\n    \n}",
+        "testCases": [
+            {
+                "input": [
+                    [
+                        1,
+                        2,
+                        3,
+                        4
+                    ],
+                    1
+                ],
+                "output": [
+                    4,
+                    1,
+                    2,
+                    3
+                ]
+            }
+        ],
+        "hiddenTests": [
+            {
+                "input": [
+                    [
+                        1
+                    ],
+                    3
+                ],
+                "output": [
+                    1
+                ]
+            }
+        ],
+        "timeLimit": 2000
+    }
+]

@@ -13,7 +13,8 @@ export default function TrainingPage() {
     const [loading, setLoading] = useState(false)
     const [stats, setStats] = useState({
         javascript: { solved: 0, total: 0, nextDifficulty: 'easy', loading: true },
-        python: { solved: 0, total: 0, nextDifficulty: 'easy', loading: true }
+        python: { solved: 0, total: 0, nextDifficulty: 'easy', loading: true },
+        cpp: { solved: 0, total: 0, nextDifficulty: 'easy', loading: true }
     })
 
     useEffect(() => {
@@ -39,6 +40,7 @@ export default function TrainingPage() {
 
         fetchStats('javascript')
         fetchStats('python')
+        fetchStats('cpp')
     }, [])
 
     const handleContinue = async (language) => {
@@ -103,8 +105,8 @@ export default function TrainingPage() {
                             <span className="font-bold text-green-500">Completed!</span>
                         ) : (
                             <span className={`font-bold uppercase ${stat.nextDifficulty === 'easy' ? 'text-green-500' :
-                                    stat.nextDifficulty === 'medium' ? 'text-yellow-500' :
-                                        'text-red-500'
+                                stat.nextDifficulty === 'medium' ? 'text-yellow-500' :
+                                    'text-red-500'
                                 }`}>{stat.nextDifficulty}</span>
                         )}
                     </div>
@@ -142,6 +144,12 @@ export default function TrainingPage() {
                         title="Python"
                         icon={Trophy} // Placeholder for Python
                         colorClass="text-blue-500 bg-blue-500/10"
+                    />
+                    <PathwayCard
+                        language="cpp"
+                        title="C++"
+                        icon={Zap}
+                        colorClass="text-blue-600 bg-blue-600/10"
                     />
                 </div>
             </div>

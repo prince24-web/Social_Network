@@ -1,0 +1,367 @@
+[
+    {
+        "id": "two-sum-cpp",
+        "title": "Two Sum",
+        "difficulty": "easy",
+        "language": "cpp",
+        "description": "Return indices of two numbers that add up to target.",
+        "functionSignature": "std::vector<int> twoSum(std::vector<int>& nums, int target)",
+        "starterCode": "#include <vector>\n\nstd::vector<int> twoSum(std::vector<int>& nums, int target) {\n    \n}",
+        "testCases": [
+            {
+                "input": [
+                    [
+                        2,
+                        7,
+                        11,
+                        15
+                    ],
+                    9
+                ],
+                "output": [
+                    0,
+                    1
+                ]
+            },
+            {
+                "input": [
+                    [
+                        3,
+                        2,
+                        4
+                    ],
+                    6
+                ],
+                "output": [
+                    1,
+                    2
+                ]
+            }
+        ],
+        "hiddenTests": [
+            {
+                "input": [
+                    [
+                        1,
+                        5,
+                        1,
+                        5
+                    ],
+                    10
+                ],
+                "output": [
+                    1,
+                    3
+                ]
+            }
+        ],
+        "timeLimit": 2000
+    },
+    {
+        "id": "reverse-string-cpp",
+        "title": "Reverse String",
+        "difficulty": "easy",
+        "language": "cpp",
+        "description": "Return the reversed version of the input string.",
+        "functionSignature": "std::string reverseString(std::string str)",
+        "starterCode": "#include <string>\n#include <algorithm>\n\nstd::string reverseString(std::string str) {\n    \n}",
+        "testCases": [
+            {
+                "input": [
+                    "hello"
+                ],
+                "output": "olleh"
+            },
+            {
+                "input": [
+                    "abc"
+                ],
+                "output": "cba"
+            }
+        ],
+        "hiddenTests": [
+            {
+                "input": [
+                    ""
+                ],
+                "output": ""
+            }
+        ],
+        "timeLimit": 2000
+    },
+    {
+        "id": "max-number-cpp",
+        "title": "Find Maximum",
+        "difficulty": "easy",
+        "language": "cpp",
+        "description": "Return the largest number in an array.",
+        "functionSignature": "int findMax(std::vector<int>& nums)",
+        "starterCode": "#include <vector>\n#include <algorithm>\n\nint findMax(std::vector<int>& nums) {\n    \n}",
+        "testCases": [
+            {
+                "input": [
+                    [
+                        1,
+                        5,
+                        3
+                    ]
+                ],
+                "output": 5
+            },
+            {
+                "input": [
+                    [
+                        -1,
+                        -5,
+                        -3
+                    ]
+                ],
+                "output": -1
+            }
+        ],
+        "hiddenTests": [
+            {
+                "input": [
+                    [
+                        100
+                    ]
+                ],
+                "output": 100
+            }
+        ],
+        "timeLimit": 2000
+    },
+    {
+        "id": "palindrome-cpp",
+        "title": "Palindrome Check",
+        "difficulty": "easy",
+        "language": "cpp",
+        "description": "Check if a string is a palindrome.",
+        "functionSignature": "bool isPalindrome(std::string str)",
+        "starterCode": "#include <string>\n\nbool isPalindrome(std::string str) {\n    \n}",
+        "testCases": [
+            {
+                "input": [
+                    "racecar"
+                ],
+                "output": true
+            },
+            {
+                "input": [
+                    "hello"
+                ],
+                "output": false
+            }
+        ],
+        "hiddenTests": [
+            {
+                "input": [
+                    "a"
+                ],
+                "output": true
+            }
+        ],
+        "timeLimit": 2000
+    },
+    {
+        "id": "sum-array-cpp",
+        "title": "Sum of Array",
+        "difficulty": "easy",
+        "language": "cpp",
+        "description": "Return the sum of all numbers in an array.",
+        "functionSignature": "int sumArray(std::vector<int>& nums)",
+        "starterCode": "#include <vector>\n#include <numeric>\n\nint sumArray(std::vector<int>& nums) {\n    \n}",
+        "testCases": [
+            {
+                "input": [
+                    [
+                        1,
+                        2,
+                        3
+                    ]
+                ],
+                "output": 6
+            },
+            {
+                "input": [
+                    [
+                        5
+                    ]
+                ],
+                "output": 5
+            }
+        ],
+        "hiddenTests": [
+            {
+                "input": [
+                    []
+                ],
+                "output": 0
+            }
+        ],
+        "timeLimit": 2000
+    },
+    {
+        "id": "count-vowels-cpp",
+        "title": "Count Vowels",
+        "difficulty": "easy",
+        "language": "cpp",
+        "description": "Count the number of vowels in a string.",
+        "functionSignature": "int countVowels(std::string str)",
+        "starterCode": "#include <string>\n\nint countVowels(std::string str) {\n    \n}",
+        "testCases": [
+            {
+                "input": [
+                    "hello"
+                ],
+                "output": 2
+            },
+            {
+                "input": [
+                    "xyz"
+                ],
+                "output": 0
+            }
+        ],
+        "hiddenTests": [
+            {
+                "input": [
+                    "AEIOU"
+                ],
+                "output": 5
+            }
+        ],
+        "timeLimit": 2000
+    },
+    {
+        "id": "even-numbers-cpp",
+        "title": "Filter Even Numbers",
+        "difficulty": "easy",
+        "language": "cpp",
+        "description": "Return only even numbers from an array.",
+        "functionSignature": "std::vector<int> filterEvens(std::vector<int>& nums)",
+        "starterCode": "#include <vector>\n\nstd::vector<int> filterEvens(std::vector<int>& nums) {\n    \n}",
+        "testCases": [
+            {
+                "input": [
+                    [
+                        1,
+                        2,
+                        3,
+                        4
+                    ]
+                ],
+                "output": [
+                    2,
+                    4
+                ]
+            }
+        ],
+        "hiddenTests": [
+            {
+                "input": [
+                    [
+                        7,
+                        9
+                    ]
+                ],
+                "output": []
+            }
+        ],
+        "timeLimit": 2000
+    },
+    {
+        "id": "capitalize-cpp",
+        "title": "Capitalize First Letter",
+        "difficulty": "easy",
+        "language": "cpp",
+        "description": "Capitalize the first letter of a string.",
+        "functionSignature": "std::string capitalize(std::string str)",
+        "starterCode": "#include <string>\n#include <cctype>\n\nstd::string capitalize(std::string str) {\n    \n}",
+        "testCases": [
+            {
+                "input": [
+                    "hello"
+                ],
+                "output": "Hello"
+            }
+        ],
+        "hiddenTests": [
+            {
+                "input": [
+                    "a"
+                ],
+                "output": "A"
+            }
+        ],
+        "timeLimit": 2000
+    },
+    {
+        "id": "array-length-cpp",
+        "title": "Array Length",
+        "difficulty": "easy",
+        "language": "cpp",
+        "description": "Return the length of an array.",
+        "functionSignature": "int arrayLength(std::vector<int>& arr)",
+        "starterCode": "#include <vector>\n\nint arrayLength(std::vector<int>& arr) {\n    \n}",
+        "testCases": [
+            {
+                "input": [
+                    [
+                        1,
+                        2,
+                        3
+                    ]
+                ],
+                "output": 3
+            }
+        ],
+        "hiddenTests": [
+            {
+                "input": [
+                    []
+                ],
+                "output": 0
+            }
+        ],
+        "timeLimit": 2000
+    },
+    {
+        "id": "square-numbers-cpp",
+        "title": "Square Numbers",
+        "difficulty": "easy",
+        "language": "cpp",
+        "description": "Return an array of squared numbers.",
+        "functionSignature": "std::vector<int> squareNumbers(std::vector<int>& nums)",
+        "starterCode": "#include <vector>\n\nstd::vector<int> squareNumbers(std::vector<int>& nums) {\n    \n}",
+        "testCases": [
+            {
+                "input": [
+                    [
+                        1,
+                        2,
+                        3
+                    ]
+                ],
+                "output": [
+                    1,
+                    4,
+                    9
+                ]
+            }
+        ],
+        "hiddenTests": [
+            {
+                "input": [
+                    [
+                        0
+                    ]
+                ],
+                "output": [
+                    0
+                ]
+            }
+        ],
+        "timeLimit": 2000
+    }
+]
