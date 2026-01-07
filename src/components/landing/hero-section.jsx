@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { FaPython, FaJs, FaReact, FaJava, FaRust } from "react-icons/fa";
-import { SiCplusplus, SiTypescript, SiGo } from "react-icons/si";
+import { SiCplusplus, SiPhp, SiGo } from "react-icons/si";
 
 export function HeroSection() {
   const floatingIcons = [
     { Icon: FaPython, color: "#3776AB", delay: "0s" },
     { Icon: FaJs, color: "#F7DF1E", delay: "1s" },
     { Icon: SiCplusplus, color: "#00599C", delay: "2s" },
-    { Icon: SiTypescript, color: "#3178C6", delay: "3s" },
+    { Icon: SiPhp, color: "#777BB4", delay: "3s" },
     { Icon: FaReact, color: "#61DAFB", delay: "1.5s" },
     { Icon: FaJava, color: "#007396", delay: "2.5s" },
     { Icon: SiGo, color: "#00ADD8", delay: "0.5s" },
