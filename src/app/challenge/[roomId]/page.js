@@ -208,7 +208,7 @@ export default function ArenaPage({ params }) {
                 }
             })
 
-            allPassed = results.every(r => r.passed)
+            allPassed = results.length > 0 && results.every(r => r.passed)
 
             if (isSubmission && allPassed) {
                 finalLogs.push({ type: 'success', content: '🏆 All Tests Passed! Submitting...' })
