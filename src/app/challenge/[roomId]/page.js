@@ -174,6 +174,10 @@ export default function ArenaPage({ params }) {
                 const sig = challenge.function_signature || challenge.functionSignature || ""
                 const match = sig.match(/def\s+(\w+)/)
                 if (match) functionName = match[1]
+            } else if (room.language === 'cpp' || room.language === 'c++') {
+                const sig = challenge.function_signature || challenge.functionSignature || ""
+                const match = sig.match(/(\w+)\s*\(/)
+                if (match) functionName = match[1]
             }
 
             if (!functionName) throw new Error("Could not determine function name.")

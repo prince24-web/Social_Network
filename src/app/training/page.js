@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
-import { Loader2, Zap, Trophy, PlayCircle, CheckCircle2 } from "lucide-react"
+import { Loader2, PlayCircle, CheckCircle2 } from "lucide-react"
 import { Progress } from "@/components/ui/progress"
 
 export default function TrainingPage() {
@@ -69,17 +69,17 @@ export default function TrainingPage() {
         }
     }
 
-    const PathwayCard = ({ language, title, icon: Icon, colorClass }) => {
+    const PathwayCard = ({ language, title, logo, colorClass }) => {
         const stat = stats[language]
         const progress = stat.total > 0 ? (stat.solved / stat.total) * 100 : 0
         const isCompleted = stat.nextDifficulty === 'completed'
 
         return (
-            <Card className="border-2 hover:border-primary/50 transition-all cursor-pointer group" onClick={() => !loading && handleContinue(language)}>
+            <Card className="border-2 hover:border-primary/50 transition-all cursor-pointer group bg-muted/50" onClick={() => !loading && handleContinue(language)}>
                 <CardHeader>
                     <div className="flex items-center justify-between">
-                        <div className={`p-3 rounded-xl bg-muted ${colorClass} group-hover:scale-110 transition-transform`}>
-                            <Icon className="w-8 h-8" />
+                        <div className={`p-3 rounded-xl bg-background border ${colorClass} group-hover:scale-110 transition-transform flex items-center justify-center w-14 h-14 shadow-lg shadow-black/20`}>
+                            <img src={logo} alt={title} className="w-8 h-8 object-contain" />
                         </div>
                         {isCompleted && <CheckCircle2 className="w-6 h-6 text-green-500" />}
                     </div>
@@ -132,24 +132,24 @@ export default function TrainingPage() {
                     <p className="text-muted-foreground">Select a language to continue your journey.</p>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <PathwayCard
                         language="javascript"
                         title="JavaScript"
-                        icon={Zap}
-                        colorClass="text-yellow-500 bg-yellow-500/10"
+                        logo="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg"
+                        colorClass="border-yellow-500/20 group-hover:border-yellow-500/50"
                     />
                     <PathwayCard
                         language="python"
                         title="Python"
-                        icon={Trophy} // Placeholder for Python
-                        colorClass="text-blue-500 bg-blue-500/10"
+                        logo="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"
+                        colorClass="border-blue-500/20 group-hover:border-blue-500/50"
                     />
                     <PathwayCard
                         language="cpp"
                         title="C++"
-                        icon={Zap}
-                        colorClass="text-blue-600 bg-blue-600/10"
+                        logo="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg"
+                        colorClass="border-blue-600/20 group-hover:border-blue-600/50"
                     />
                 </div>
             </div>

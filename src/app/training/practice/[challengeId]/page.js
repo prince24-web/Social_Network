@@ -112,6 +112,10 @@ export default function PracticeArenaPage({ params }) {
                 const sig = challenge.function_signature || ""
                 const match = sig.match(/def\s+(\w+)/)
                 if (match) functionName = match[1]
+            } else if (challenge.language === 'cpp' || challenge.language === 'c++') {
+                const sig = challenge.function_signature || ""
+                const match = sig.match(/(\w+)\s*\(/)
+                if (match) functionName = match[1]
             }
 
             if (!functionName) throw new Error("Could not determine function name.")
