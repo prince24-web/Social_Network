@@ -17,7 +17,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
-export function AuthForm({ className, ...props }) {
+export function AuthForm({ className, next = "/onboarding", ...props }) {
   const [isLoading, setIsLoading] = React.useState(false)
   const [email, setEmail] = React.useState("")
   const [message, setMessage] = React.useState(null)
@@ -33,7 +33,7 @@ export function AuthForm({ className, ...props }) {
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: `${location.origin}/auth/callback?next=/onboarding`,
+          emailRedirectTo: `${location.origin}/auth/callback?next=${next}`,
         },
       })
 
@@ -55,7 +55,7 @@ export function AuthForm({ className, ...props }) {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'github',
         options: {
-          redirectTo: `${location.origin}/auth/callback?next=/onboarding`,
+          redirectTo: `${location.origin}/auth/callback?next=${next}`,
         },
       })
       if (error) {

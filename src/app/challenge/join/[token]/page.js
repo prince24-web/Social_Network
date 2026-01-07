@@ -3,6 +3,7 @@
 import * as React from "react"
 import { useRouter } from "next/navigation"
 import { Loader2 } from "lucide-react"
+import { createClient } from "@/utils/supabase/client"
 import Loader from "@/components/ui/loader"
 
 export default function JoinChallengePage({ params }) {
@@ -24,6 +25,16 @@ export default function JoinChallengePage({ params }) {
 
         const joinRoom = async () => {
             try {
+                const supabase = createClient()
+                const { data: { user } } = await supabase.auth.getUser()
+
+                if (!user) {
+                    setStatus("Redirecting to login...")
+                    const next = encodeURIComponent(window.location.pathname)
+                    router.push(`/login?next=${next}`)
+                    return
+                }
+
                 const res = await fetch("/api/challenge/join", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
